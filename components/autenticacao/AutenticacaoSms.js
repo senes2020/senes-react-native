@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, {useState} from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -19,6 +19,35 @@ const TelaAutenticacaoSms = ({navigation}, props) =>{
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [codigo, setCodigo] = useState('')
+
+    //Método para definir todas as ações no evento de entrada
+    const escolherPerfilAutenticacao = async (e) =>{
+
+        //O return vazio encerra a thread do código
+        if(!this.validar()) return
+
+        //envio dos dados para a API, temporariamente bloqueado
+        /*
+        const usuario = this.state
+        const response = await signIn(usuario)
+
+        if(response.ok){
+            navigation.navigate('AutenticacaoPerfil')
+        }
+        */
+
+        //comando temporário
+        navigation.navigate('AutenticacaoPerfil')
+    }
+
+    validar = () =>{
+        if(!codigo){
+            Alert.alert('Por gentileza, digite um código válido')
+            return false
+        }else{
+            return true
+        }
+    }
 
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
@@ -50,9 +79,11 @@ const TelaAutenticacaoSms = ({navigation}, props) =>{
     setLoadingComplete(true);
     }
 
+    /*
     const escolherPerfilAutenticacao = (e) =>{
         codigo ? navigation.navigate('AutenticacaoPerfil') : console.log('Digite o sms')
     }
+    */
 
     return (
         <View style={styles.container}>

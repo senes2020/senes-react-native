@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -11,6 +11,9 @@ import { AppLoading } from 'expo';
 //Importando input com label flutuante
 import FloatingLabelInput from '../tools/FloatingLabelInputWhite'
 
+//Importando serviços
+import { signIn } from '../../services/auth-service'
+
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
 //Importando toast simples para avisos de validação
 
@@ -19,6 +22,35 @@ const TelaAutenticacao = ({navigation}, props) =>{
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [cpf, setCpf] = useState('');
+
+    //Método para definir todas as ações no evento de entrada
+    const receberCodigoSms = async (e) =>{
+
+        //O return vazio encerra a thread do código
+        if(!this.validar()) return
+
+        //envio dos dados para a API, temporariamente bloqueado
+        /*
+        const usuario = this.state
+        const response = await signIn(usuario)
+
+        if(response.ok){
+            navigation.navigate('AutenticacaoSms')
+        }
+        */
+
+        //comando temporário
+        navigation.navigate('AutenticacaoSms')
+    }
+
+    validar = () =>{
+        if(!cpf){
+            Alert.alert('Por gentileza, digite um CPF válido')
+            return false
+        }else{
+            return true
+        }
+    }
 
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
@@ -50,9 +82,11 @@ const TelaAutenticacao = ({navigation}, props) =>{
     setLoadingComplete(true);
     }
 
+    /*
     const receberCodigoSms = (e) =>{
         cpf ? navigation.navigate('AutenticacaoSms') :  console.log('Digite o CPF');
     }
+*/
 
     return (
         <View style={styles.container}>

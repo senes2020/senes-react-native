@@ -1,5 +1,5 @@
 //Recursos do React/React Native
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 
 //Importando componente de fontes
@@ -11,10 +11,27 @@ import SliderBoxComponent from './SliderBox'
 //Importando AppLoading para load de recursos
 import { AppLoading} from 'expo';
 
+//Importando serviços
+import { isSignedIn } from '../services/auth-service'
+
 const PaginaInicial = ({navigation}, props) =>{
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
+
+    /*
+    const useEffect = async () => {
+        
+        //Verifica se usuário já está logado - temporariamente desabilitado
+    
+        const session = await isSignedIn()
+        if(session){
+
+            //Mudar aqui pra Home depois
+            navigation.replace('Autenticacao')
+        }
+
+    }*/
 
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
