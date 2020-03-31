@@ -9,11 +9,10 @@ import * as Font from 'expo-font'
 import { AppLoading } from 'expo';
 
 //Importando input com label flutuante
-import FloatingLabelInput from './FloatingLabelInput'
+import FloatingLabelInput from '../tools/FloatingLabelInputWhite'
 
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
 //Importando toast simples para avisos de validação
-import Toast from 'react-native-simple-toast';
 
 const TelaAutenticacaoSms = ({navigation}, props) =>{
 
@@ -35,10 +34,10 @@ const TelaAutenticacaoSms = ({navigation}, props) =>{
     async function loadResourcesAsync() {
         await Promise.all([
             Font.loadAsync({
-                'montserrat-regular-texto': require('../assets/fonts/montserrat/Montserrat-Regular.ttf'),
-                'montserrat-titulo': require('../assets/fonts/montserrat/Montserrat-Light.ttf'),
-                'montserrat-titulo-magro': require('../assets/fonts/montserrat/Montserrat-Thin.ttf'),
-                'montserrat-negrito': require('../assets/fonts/montserrat/Montserrat-SemiBold.ttf')
+                'montserrat-regular-texto': require('../../assets/fonts/montserrat/Montserrat-Regular.ttf'),
+                'montserrat-titulo': require('../../assets/fonts/montserrat/Montserrat-Light.ttf'),
+                'montserrat-titulo-magro': require('../../assets/fonts/montserrat/Montserrat-Thin.ttf'),
+                'montserrat-negrito': require('../../assets/fonts/montserrat/Montserrat-SemiBold.ttf')
             }),
         ]);
     }
@@ -52,14 +51,14 @@ const TelaAutenticacaoSms = ({navigation}, props) =>{
     }
 
     const escolherPerfilAutenticacao = (e) =>{
-        codigo ? navigation.navigate('AutenticacaoPerfil') : Toast.show('Por gentileza, insira o código enviado')
+        codigo ? navigation.navigate('AutenticacaoPerfil') : console.log('Digite o sms')
     }
 
     return (
         <View style={styles.container}>
            <Image
           style={styles.image_logo}
-          source={require('../assets/logo/logo_png_light.png')}
+          source={require('../../assets/logo/logo_png_light.png')}
         />
          <Text style={styles.texto}>
             Enviamos um código para o seu número com final (**)*****-3456 cadastrado.

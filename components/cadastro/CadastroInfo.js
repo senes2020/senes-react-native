@@ -8,18 +8,24 @@ import * as Font from 'expo-font'
 //Importando AppLoading para load de recursos
 import { AppLoading } from 'expo';
 
-//Importando input com label flutuante
-import FloatingLabelInput from './FloatingLabelInput'
+//Importando LinearGradient do expo-linear-gradient
+//Fonte inicial: https://medium.com/@chsvk/react-native-gradient-backgrounds-b9f1f14bfe7b
+//Outros detalhes: 
+import {LinearGradient} from 'expo-linear-gradient'
+/*
+<LinearGradient
+                colors={['#005E80','#005E80','#005E80','#FFFFFF']}
+                style={styles.container_gradiente}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+            >
+            </LinearGradient>
+*/
 
-//Fonte: https://www.npmjs.com/package/react-native-simple-toast
-//Importando toast simples para avisos de validação
-import Toast from 'react-native-simple-toast';
-
-const TelaAutenticacao = ({navigation}, props) =>{
+const TelaCadastroInformacao = ({navigation}, props) =>{
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
-    const [cpf, setCpf] = useState('');
 
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
@@ -35,10 +41,10 @@ const TelaAutenticacao = ({navigation}, props) =>{
     async function loadResourcesAsync() {
         await Promise.all([
             Font.loadAsync({
-                'montserrat-regular-texto': require('../assets/fonts/montserrat/Montserrat-Regular.ttf'),
-                'montserrat-titulo': require('../assets/fonts/montserrat/Montserrat-Light.ttf'),
-                'montserrat-titulo-magro': require('../assets/fonts/montserrat/Montserrat-Thin.ttf'),
-                'montserrat-negrito': require('../assets/fonts/montserrat/Montserrat-SemiBold.ttf')
+                'montserrat-regular-texto': require('../../assets/fonts/montserrat/Montserrat-Regular.ttf'),
+                'montserrat-titulo': require('../../assets/fonts/montserrat/Montserrat-Light.ttf'),
+                'montserrat-titulo-magro': require('../../assets/fonts/montserrat/Montserrat-Thin.ttf'),
+                'montserrat-negrito': require('../../assets/fonts/montserrat/Montserrat-SemiBold.ttf')
             }),
         ]);
     }
@@ -51,38 +57,21 @@ const TelaAutenticacao = ({navigation}, props) =>{
     setLoadingComplete(true);
     }
 
-    const receberCodigoSms = (e) =>{
-        cpf ? navigation.navigate('AutenticacaoSms') :  Toast.show('Por gentileza, preencha o CPF');
-    }
-
     return (
         <View style={styles.container}>
-           <Image
-          style={styles.image_logo}
-          source={require('../assets/logo/logo_png_light.png')}
-        />
 
-        <FloatingLabelInput
-            label="Digite seu CPF ^^"
-            value={cpf ? cpf : ''}
-            onChange={(texto) => setCpf(texto)}
-            maxLength={11}
-            keyboardType={'numeric'}
-        />
+            <Text>Legal ter você por aqui ^^</Text>
+            <Text>Algumas recomendações antes de começarmos:</Text>
+            
+            <Text>Esse cadastro deve ter informações do dono desse número</Text>
+            <Text>O dono desse número pode ser um idoso ou um parente próximo</Text>
 
-        <TouchableOpacity
-         style={styles.button}
-         onPress={receberCodigoSms}
-        >
-         <Text style={styles.button_texto}> ENTRAR</Text>
-       </TouchableOpacity>
+            <Text>Vamos começar! Nos diga quem você é, isso é muito importante pra nós{/* Nome e CPF */}</Text>
+            
+            <Text>Se precisarmos, como podemos falar contigo? {/* Email e telefone */}</Text>
 
-       <TouchableOpacity
-         style={styles.button_info}
-        >
-         <Text style={styles.button_texto}>i</Text>
-       </TouchableOpacity>
-
+            <Text>Enviamos um código pro seu número cadastrado só pra confirmar, pode verificar se chegou?{/* Código do SMS */}</Text>
+            <Text>Pronto! ^^ Agora é só acessar com o CPF e com esse número quando quiser chamar um profissional</Text>
         </View>
       );
 }
@@ -133,4 +122,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default TelaAutenticacao
+export default TelaCadastroInformacao

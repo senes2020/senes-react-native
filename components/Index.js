@@ -9,7 +9,7 @@ import * as Font from 'expo-font'
 import SliderBoxComponent from './SliderBox'
 
 //Importando AppLoading para load de recursos
-import { AppLoading, AuthSession } from 'expo';
+import { AppLoading} from 'expo';
 
 const PaginaInicial = ({navigation}, props) =>{
 
@@ -50,6 +50,9 @@ const PaginaInicial = ({navigation}, props) =>{
         navigation.navigate('Autenticacao')
     }
 
+    const cadastrar = (e) =>{
+        navigation.navigate('CadastroIntro')
+    }
     
     return (
         <View style={styles.container}>
@@ -80,7 +83,7 @@ const PaginaInicial = ({navigation}, props) =>{
                 </View>
 
                 <View style={styles.container_acao}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={cadastrar}>
                         <View style={styles.container_link}>
                             <View style={styles.button_circular}>
                                 <Image

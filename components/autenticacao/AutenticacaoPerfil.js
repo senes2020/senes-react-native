@@ -27,10 +27,10 @@ const TelaAutenticacaoPerfil = ({navigation}, props) =>{
     async function loadResourcesAsync() {
         await Promise.all([
             Font.loadAsync({
-                'montserrat-regular-texto': require('../assets/fonts/montserrat/Montserrat-Regular.ttf'),
-                'montserrat-titulo': require('../assets/fonts/montserrat/Montserrat-Light.ttf'),
-                'montserrat-titulo-magro': require('../assets/fonts/montserrat/Montserrat-Thin.ttf'),
-                'montserrat-negrito': require('../assets/fonts/montserrat/Montserrat-SemiBold.ttf')
+                'montserrat-regular-texto': require('../../assets/fonts/montserrat/Montserrat-Regular.ttf'),
+                'montserrat-titulo': require('../../assets/fonts/montserrat/Montserrat-Light.ttf'),
+                'montserrat-titulo-magro': require('../../assets/fonts/montserrat/Montserrat-Thin.ttf'),
+                'montserrat-negrito': require('../../assets/fonts/montserrat/Montserrat-SemiBold.ttf')
             }),
         ]);
     }
@@ -47,7 +47,7 @@ const TelaAutenticacaoPerfil = ({navigation}, props) =>{
         <View style={styles.container}>
          <Image
           style={styles.image_logo}
-          source={require('../assets/logo/logo_png_light.png')}
+          source={require('../../assets/logo/logo_png_light.png')}
          />
          <Text style={styles.texto}>
             Com qual perfil você gostaria de acessar?
@@ -58,13 +58,13 @@ const TelaAutenticacaoPerfil = ({navigation}, props) =>{
                 <Text style={styles.texto}>BENEFICIÁRIO</Text>
                 <Image
             style={styles.image_perfil}
-            source={require('../assets/images/old_client.png')}/>
+            source={require('../../assets/images/old_client.png')}/>
             </View>
             <View style={styles.container_perfil}>
                 <Text style={styles.texto}>COMPANHEIRO</Text>
                 <Image
             style={styles.image_perfil}
-            source={require('../assets/images/old_profissional.png')}/>    
+            source={require('../../assets/images/old_profissional.png')}/>    
             </View>
          </View> 
 
