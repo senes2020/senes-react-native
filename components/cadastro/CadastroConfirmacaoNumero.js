@@ -19,8 +19,10 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
         navigation.navigate('CadastroConclusao')
     }
 
-    const {celularDigitado} =  route.params;
-    const finalNumero = celularDigitado.substr(5, 4);
+    const {emailDigitado} =  route.params;
+    const inicialEmail = emailDigitado.substr(0, 1)
+    const finalEmail = emailDigitado.split('@')
+    const emailFinal = inicialEmail + '*****' + finalEmail[1]
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -58,13 +60,13 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.texto}>Enviamos um código pro seu número cadastrado com final (xx)xxxxx-{finalNumero} só pra confirmar, pode verificar se chegou?</Text>
+            <Text style={styles.texto}>Enviamos um código pro seu email cadastrado com final {emailFinal} só pra confirmar, pode verificar se chegou?</Text>
             <FloatingLabelInput
                 label="Digite o código enviado"
                 value={codigo ? codigo : ''}
                 onChange={(texto) => setCodigo(texto)}
                 keyboardType={'numeric'}
-                maxLength={6}
+                maxLength={5}
             />
             <Image
                 style={styles.image}

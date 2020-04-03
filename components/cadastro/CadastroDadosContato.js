@@ -18,7 +18,7 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
     const prosseguirCadastro = () =>{
         navigation.navigate('CadastroConfirmacaoNumero',
         {
-            celularDigitado: celular
+            emailDigitado: email
         })
     }
 
@@ -67,7 +67,7 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
                 label="Digite seu melhor email"
                 value={email ? email : ''}
                 onChangeText={(texto) => setEmail(texto)}
-                maxLength={20}
+                
             />
             <FloatingLabelInput
                 label="Digite seu número de celular"

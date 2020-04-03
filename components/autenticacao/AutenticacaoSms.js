@@ -92,7 +92,7 @@ const TelaAutenticacaoSms = ({navigation}, props) =>{
           source={require('../../assets/logo/logo_png_light.png')}
         />
          <Text style={styles.texto}>
-            Enviamos um código para o seu número com final (**)*****-3456 cadastrado.
+            Enviamos um código para o seu email com final s*****@hotmail.com cadastrado.
             Confirme que você é o dono dele ^^
          </Text>
          
@@ -100,7 +100,7 @@ const TelaAutenticacaoSms = ({navigation}, props) =>{
             label="Digite seu código ^^"
             value={codigo ? codigo : ''}
             onChange={(texto) => setCodigo(texto)}
-            maxLength={6}
+            maxLength={5}
             keyboardType={'numeric'}
         />
 

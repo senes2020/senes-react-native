@@ -56,11 +56,11 @@ const TelaCadastroInformacoes = ({navigation}, props) => {
 
     return (
         <View style={styles.container} onPress={avancarTela}>
-            <Text style={styles.texto}>Esse cadastro deve ter informações sobre o dono desse número</Text>
-            <Text style={styles.texto}>O dono desse número pode ser um idoso ou um parente próximo</Text>
+            <Text style={styles.texto}>Esse cadastro deve ter informações sobre o dono da conta</Text>
+            <Text style={styles.texto}>O dono da conta pode ser um idoso ou um parente próximo com um email válido</Text>
             <Image
                 style={styles.image}
-                source={require('../../assets/icons/cellphone.png')}
+                source={require('../../assets/icons/email.png')}
             />
         </View>   
       )

@@ -58,7 +58,7 @@ const TelaCadastroConclusao = ({route, navigation}, props) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.texto}>Pronto! ^^ Agora é só acessar com o CPF e com esse número quando quiser chamar um profissional</Text>
+            <Text style={styles.texto}>Pronto! ^^ Agora é só acessar com o CPF e com esse email quando quiser chamar um profissional</Text>
             
             <Image
                 style={styles.image}

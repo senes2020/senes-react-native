@@ -34,7 +34,7 @@ export const cadastrar = async (usuario) => {
 //retornando a response e setando o token no webStorage
 export const signIn = async (usuario) =>{
 
-    const response = await doRequest('autenticar/', 'POST', usuario)
+    const response = await doRequest('autenticar/cpf/', 'POST', usuario)
 
     if(response.ok){
         const usuario = await response.json()
