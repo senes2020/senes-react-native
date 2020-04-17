@@ -11,33 +11,48 @@ import { AppLoading } from 'expo';
 //Importando input com label flutuante
 import FloatingLabelInput from '../tools/FloatingLabelInputWhite'
 
+//Importando serviços
+import { autenticarCodigo } from '../../services/auth-service'
+
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
 //Importando toast simples para avisos de validação
 
-const TelaAutenticacaoSms = ({navigation}, props) =>{
+const TelaAutenticacaoSms = ({route, navigation}, props) =>{
+
+    //Recebe o email do cliente 
+    //fragmenta para exibir somente a inicial e o final, por segurança.
+    const {emailRecebido} =  route.params;
+    const inicialEmail = emailRecebido.substr(0, 1)
+    const finalEmail = emailRecebido.split('@')
+    const emailFinal = inicialEmail + '*****@' + finalEmail[1]
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [codigo, setCodigo] = useState('')
 
-    //Método para definir todas as ações no evento de entrada
-    const escolherPerfilAutenticacao = async (e) =>{
+    const autenticarCodigoFunc = async(e) => {
 
-        //O return vazio encerra a thread do código
-        if(!this.validar()) return
+        //O retorno vazio encerra a thread do código
+        if(!validar()) return
 
-        //envio dos dados para a API, temporariamente bloqueado
-        /*
-        const usuario = this.state
-        const response = await signIn(usuario)
+        try{
+            
+            //Verifica se o código digitado corresponde
+            //ao código salvo no perfil que está tentando logar
+            const response = await autenticarCodigo(codigo)
 
-        if(response.ok){
-            navigation.navigate('AutenticacaoPerfil')
+            //Se a resposta retornar 200 OK, encaminha para a próxima página
+            if(response.ok){
+                navigation.navigate('AutenticacaoPerfil')
+            }else{
+                console.log('não vai rolar, kirido')
+            }
+
+        }catch(erro){
+            console.log('entrei no catch')
+            console.log(erro)
         }
-        */
-
-        //comando temporário
-        navigation.navigate('AutenticacaoPerfil')
+        
     }
 
     validar = () =>{
@@ -92,21 +107,21 @@ const TelaAutenticacaoSms = ({navigation}, props) =>{
           source={require('../../assets/logo/logo_png_light.png')}
         />
          <Text style={styles.texto}>
-            Enviamos um código para o seu email com final s*****@hotmail.com cadastrado.
+            Enviamos um código para o seu email com final {emailFinal} cadastrado.
             Confirme que você é o dono dele ^^
          </Text>
          
          <FloatingLabelInput
             label="Digite seu código ^^"
             value={codigo ? codigo : ''}
-            onChange={(texto) => setCodigo(texto)}
+            onChangeText={(texto) => setCodigo(texto)}
             maxLength={5}
             keyboardType={'numeric'}
         />
 
         <TouchableOpacity
          style={styles.button}
-         onPress={escolherPerfilAutenticacao}
+         onPress={autenticarCodigoFunc}
         >
          <Text style={styles.button_texto}> CONFIRMAR</Text>
        </TouchableOpacity>

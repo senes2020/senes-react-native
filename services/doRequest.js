@@ -1,5 +1,5 @@
 //const URL = 'http://10.107.144.35:3000/';
-const URL = 'http://localhost:3000/';
+const URL = 'http://192.168.0.103:8080/home/';
 
 //Determinando um valor padrão para o body 
 export const doRequest = async (resource, method, body = '', urlParam = '') =>{

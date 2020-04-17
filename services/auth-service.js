@@ -32,13 +32,27 @@ export const cadastrar = async (usuario) => {
 
 //Realiza o request de autenticação do usuário
 //retornando a response e setando o token no webStorage
-export const signIn = async (usuario) =>{
+export const autenticarCpf = async (cpf) =>{
 
-    const response = await doRequest('autenticar/cpf/', 'POST', usuario)
+    const response = await doRequest('autenticar/cpf/', 'GET', '', cpf)
 
     if(response.ok){
-        const usuario = await response.json()
-        setSession(usuario)
+        //const usuario = await response.json()
+        //setSession(usuario)
+    }
+
+    return response
+}
+
+//Realiza o request de autenticação do usuário
+//retornando a response e setando o token no webStorage
+export const autenticarCodigo = async (codigo) =>{
+
+    const response = await doRequest('autenticar/codigo/', 'GET', '', codigo)
+
+    if(response.ok){
+        //const usuario = await response.json()
+        //setSession(usuario)
     }
 
     return response

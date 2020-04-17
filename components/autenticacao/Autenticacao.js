@@ -1,5 +1,5 @@
 //Recursos do React/React Native
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native'
 
 //Importando componente de fontes
@@ -12,7 +12,7 @@ import { AppLoading } from 'expo';
 import FloatingLabelInput from '../tools/FloatingLabelInputWhite'
 
 //Importando serviços
-import { signIn } from '../../services/auth-service'
+import { autenticarCpf } from '../../services/auth-service'
 
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
 //Importando toast simples para avisos de validação
@@ -22,28 +22,64 @@ const TelaAutenticacao = ({navigation}, props) =>{
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [cpf, setCpf] = useState('');
+    const [email, setEmail] = useState('')
+
+    const autenticarCpfFunc = async(e) => {
+
+        //O retorno vazio encerra a thread do código
+        if(!validar()) return
+
+        try{
+            
+            //Realiza a solicitação do serviço de autenticação por CPF
+            const response = await autenticarCpf(cpf)
+        
+            //Se a resposta voltar com status 200 OK, 
+            //retira a informação de email da promessa
+            //e seta o email no state
+            if(response.ok){
+
+                response.json().then((json) => {
+                
+                    const emailBanco = json.email;
+                    setEmail(emailBanco)
+                    
+                    navigation.navigate(
+                        'AutenticacaoSms',
+                        {
+                            emailRecebido: emailBanco
+                        })
+                })
+
+            }else{
+                console.log('não vai rolar, kirido')
+            }
+
+        }catch(erro){
+            console.log('entrei no catch')
+            console.log(erro)
+        }
+        
+    }
 
     //Método para definir todas as ações no evento de entrada
-    const receberCodigoSms = async (e) =>{
-
-        //O return vazio encerra a thread do código
-        if(!this.validar()) return
+    /*const receberCodigoSms = async (e) =>{
 
         //envio dos dados para a API, temporariamente bloqueado
-        /*
+        
         const usuario = this.state
         const response = await signIn(usuario)
 
         if(response.ok){
             navigation.navigate('AutenticacaoSms')
         }
-        */
+        
 
         //comando temporário
         navigation.navigate('AutenticacaoSms')
-    }
+    }*/
 
-    validar = () =>{
+    const validar = () =>{
         if(!cpf){
             Alert.alert('Por gentileza, digite um CPF válido')
             return false
@@ -98,14 +134,14 @@ const TelaAutenticacao = ({navigation}, props) =>{
         <FloatingLabelInput
             label="Digite seu CPF ^^"
             value={cpf ? cpf : ''}
-            onChange={(texto) => setCpf(texto)}
+            onChangeText={(texto) => setCpf(texto)}
             maxLength={11}
             keyboardType={'numeric'}
         />
 
         <TouchableOpacity
          style={styles.button}
-         onPress={receberCodigoSms}
+         onPress={autenticarCpfFunc}
         >
          <Text style={styles.button_texto}> ENTRAR</Text>
        </TouchableOpacity>
