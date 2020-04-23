@@ -45,7 +45,7 @@ const TelaAutenticacao = ({navigation}, props) =>{
                     setEmail(emailBanco)
                     
                     navigation.navigate(
-                        'AutenticacaoSms',
+                        'AutenticacaoCodigo',
                         {
                             emailRecebido: emailBanco
                         })

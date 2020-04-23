@@ -48,7 +48,7 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
 
                 //Enviar dados para o Spring cadastrar o novo beneficiário e enviar email
                 //Pasar para próxima página coletando o email
-                navigation.navigate('CadastroConfirmacaoNumero',
+                navigation.navigate('CadastroConfirmacaoEmail',
                 {
                     emailDigitado: email
                 })

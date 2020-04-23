@@ -7,13 +7,13 @@ import { NavigationContainer } from '@react-navigation/native';
 //Componentes
 import Autenticacao from './autenticacao/Autenticacao';
 import Index from './Index'
-import TelaAutenticacaoSms from './autenticacao/AutenticacaoSms';
+import TelaAutenticacaoCodigo from './autenticacao/AutenticacaoCodigo';
 import AutenticacaoPerfil from './autenticacao/AutenticacaoPerfil'
 import CadastroIntro from './cadastro/CadastroIntro'
 import TelaCadastroInformacoes from './cadastro/CadastroInformacoes';
 import TelaCadastroDadosIdentificacao from './cadastro/CadastroDadosIdentificacao';
 import TelaCadastroDadosContato from './cadastro/CadastroDadosContato';
-import TelaCadastroConfirmacaoSms from './cadastro/CadastroConfirmacaoNumero';
+import TelaCadastroConfirmacaoEmail from './cadastro/CadastroConfirmacaoEmail';
 import TelaCadastroConclusao from './cadastro/CadastroConclusao';
 
 const Stack = createStackNavigator();
@@ -33,8 +33,8 @@ export default function MyStack(){
                     options={{title: 'Faça login já ^^'}}
                 />
                 <Stack.Screen
-                    name="AutenticacaoSms"
-                    component={TelaAutenticacaoSms}
+                    name="AutenticacaoCodigo"
+                    component={TelaAutenticacaoCodigo}
                     options={{headerShown: false}}
                 />
                 <Stack.Screen
@@ -63,8 +63,8 @@ export default function MyStack(){
                     options={{headerShown: false}}
                 />
                 <Stack.Screen
-                    name="CadastroConfirmacaoNumero"
-                    component={TelaCadastroConfirmacaoSms}
+                    name="CadastroConfirmacaoEmail"
+                    component={TelaCadastroConfirmacaoEmail}
                     options={{headerShown: false}}
                 />
                 <Stack.Screen

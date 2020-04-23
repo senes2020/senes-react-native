@@ -17,7 +17,7 @@ import { autenticarCodigo } from '../../services/auth-service'
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
 //Importando toast simples para avisos de validação
 
-const TelaAutenticacaoSms = ({route, navigation}, props) =>{
+const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
 
     //Recebe o email do cliente 
     //fragmenta para exibir somente a inicial e o final, por segurança.
@@ -192,4 +192,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default TelaAutenticacaoSms
+export default TelaAutenticacaoCodigo
