@@ -25,7 +25,8 @@ const TelaCadastroDadosIdentificacao = ({navigation}, props) => {
         navigation.navigate(
             'CadastroDadosContato',
             {
-                nomeDigitado: nome
+                nomeDigitado: nome,
+                cpfDigitado: cpf
             })
     }
 
@@ -72,7 +73,7 @@ const TelaCadastroDadosIdentificacao = ({navigation}, props) => {
             <FloatingLabelInput
                 label="Digite seu CPF"
                 value={cpf ? cpf : ''}
-                onChange={(texto) => setCpf(texto)}
+                onChangeText={(texto) => setCpf(texto)}
                 maxLength={11}
                 keyboardType={'numeric'}
             />

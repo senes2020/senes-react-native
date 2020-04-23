@@ -14,21 +14,6 @@ const setSession = (usuario) => {
 //enviar código recebido pelo usuário e liberar entrada
 //verificar se usuário recebido tem dois perfis e encaminhar adequadamente
 
-export const cadastrar = async (usuario) => {
-
-    //Método definido em doRequest.js
-    //função genérica que realiza as requisições
-    const response = await doRequest('registrar/', 'POST', usuario)
-    console.log(response)
-
-    if(response.ok){
-        const usuario = await response.json()
-        setSession(usuario)
-    }
-
-    return response
-
-}
 
 //Realiza o request de autenticação do usuário
 //retornando a response e setando o token no webStorage
@@ -39,6 +24,9 @@ export const autenticarCpf = async (cpf) =>{
     if(response.ok){
         //const usuario = await response.json()
         //setSession(usuario)
+        console.log('retornou response')
+    }else{
+        console.log('não retornou response')
     }
 
     return response

@@ -13,21 +13,56 @@ import { AppLoading } from 'expo'
 import FloatingLabelInput from '../tools/FloatingLabelInputBlue'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
+//Importando serviços
+import { cadastrar } from '../../services/cadastro-service'
+
 const TelaCadastroDadosContato = ({route, navigation}, props) => {
-
-    const prosseguirCadastro = () =>{
-        navigation.navigate('CadastroConfirmacaoNumero',
-        {
-            emailDigitado: email
-        })
-    }
-
-    const {nomeDigitado} =  route.params;
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [email, setEmail] = useState('');
     const [celular, setCelular] = useState('');
+
+    //Coleta de dados digitados em outra tela
+    const {nomeDigitado, cpfDigitado} =  route.params;
+
+    const prosseguirCadastro = async(e) => {
+
+        //Montagem de objeto para cadastro de beneficiário
+        const beneficiario = {
+            nome: nomeDigitado,
+            cpf: cpfDigitado,
+            email: email,
+            celular: celular
+        }
+
+        try{
+            
+            //Realiza a solicitação do serviço de cadastro
+            const response = await cadastrar(beneficiario)
+        
+            //Se a resposta voltar com status 200 OK, 
+            //retira a informação de email da promessa
+            //e seta o email no state
+            if(response.ok){
+
+                //Enviar dados para o Spring cadastrar o novo beneficiário e enviar email
+                //Pasar para próxima página coletando o email
+                navigation.navigate('CadastroConfirmacaoNumero',
+                {
+                    emailDigitado: email
+                })
+
+            }else{
+                console.log('não vai rolar, kirido')
+            }
+
+        }catch(erro){
+            console.log('entrei no catch daqui')
+            console.log(erro)
+        }
+
+    }
 
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {

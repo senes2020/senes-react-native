@@ -13,20 +13,45 @@ import { AppLoading } from 'expo'
 import FloatingLabelInput from '../tools/FloatingLabelInputBlue'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
+//Importando serviços
+import { autenticarCodigo } from '../../services/auth-service'
+
 const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
-
-    const prosseguirCadastro = () =>{
-        navigation.navigate('CadastroConclusao')
-    }
-
-    const {emailDigitado} =  route.params;
-    const inicialEmail = emailDigitado.substr(0, 1)
-    const finalEmail = emailDigitado.split('@')
-    const emailFinal = inicialEmail + '*****' + finalEmail[1]
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [codigo, setCodigo] = useState('');
+
+    //Coleta de dados de outras telas para passagem de parâmetros
+    const {emailDigitado} =  route.params;
+
+    //Tratamento de prévia do email para exibição
+    const inicialEmail = emailDigitado.substr(0, 1)
+    const finalEmail = emailDigitado.split('@')
+    const emailFinal = inicialEmail + '*****' + finalEmail[1]
+
+    const prosseguirCadastro = async(e) =>{
+        //navigation.navigate('CadastroConclusao')
+
+        try{
+            
+            //Verifica se o código digitado corresponde
+            //ao código salvo no perfil que está tentando logar
+            const response = await autenticarCodigo(codigo)
+
+            //Se a resposta retornar 200 OK, encaminha para a próxima página
+            if(response.ok){
+                navigation.navigate('CadastroConclusao')
+            }else{
+                console.log('não vai rolar, kirido')
+            }
+
+        }catch(erro){
+            console.log('entrei no catch')
+            console.log(erro)
+        }        
+
+    }
 
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
@@ -64,7 +89,7 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
             <FloatingLabelInput
                 label="Digite o código enviado"
                 value={codigo ? codigo : ''}
-                onChange={(texto) => setCodigo(texto)}
+                onChangeText={(texto) => setCodigo(texto)}
                 keyboardType={'numeric'}
                 maxLength={5}
             />

@@ -1,5 +1,5 @@
-//const URL = 'http://10.107.144.35:3000/';
-const URL = 'http://192.168.0.103:8080/home/';
+//SEMPRE QUE MANDAR PRO GIT ESCONDER O IP
+const URL = 
 
 //Determinando um valor padrão para o body 
 export const doRequest = async (resource, method, body = '', urlParam = '') =>{
@@ -13,9 +13,13 @@ export const doRequest = async (resource, method, body = '', urlParam = '') =>{
 
     //O método includes() determina se uma matriz contém um elemento especificado.
     //Este método retorna verdadeiro se a matriz contém o elemento, e falso se não.
+    
     if(!['GET', 'DELETE'].includes(method)){
         params.body = JSON.stringify(body)
     } 
+
+    console.log(URL + resource + urlParam)
+    console.log(params)
 
     //Método para realizar requisições assíncronas
     //espera como obrigatório a URI e possui outros parâmetros não obrigatórios
