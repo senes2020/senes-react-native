@@ -15,6 +15,8 @@ import TelaCadastroDadosIdentificacao from './cadastro/CadastroDadosIdentificaca
 import TelaCadastroDadosContato from './cadastro/CadastroDadosContato';
 import TelaCadastroConfirmacaoEmail from './cadastro/CadastroConfirmacaoEmail';
 import TelaCadastroConclusao from './cadastro/CadastroConclusao';
+import TelaHomeBeneficiario from './home/HomeBeneficiario';
+import TelaHomeCompanheiro from './home/HomeCompanheiro';
 
 const Stack = createStackNavigator();
 
@@ -70,6 +72,16 @@ export default function MyStack(){
                 <Stack.Screen
                     name="CadastroConclusao"
                     component={TelaCadastroConclusao}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="HomeBeneficiario"
+                    component={TelaHomeBeneficiario}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="HomeCompanheiro"
+                    component={TelaHomeCompanheiro}
                     options={{headerShown: false}}
                 />
             </Stack.Navigator>

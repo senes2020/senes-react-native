@@ -14,7 +14,8 @@ import FloatingLabelInput from '../tools/FloatingLabelInputBlue'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 //Importando serviços
-import { autenticarCodigo } from '../../services/auth-service'
+//import { autenticarCodigo } from '../../services/auth-service'
+import {cadastrarBeneficiario} from '../../services/cadastro-service'
 
 const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
 
@@ -23,23 +24,28 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
     const [codigo, setCodigo] = useState('');
 
     //Coleta de dados de outras telas para passagem de parâmetros
-    const {emailDigitado} =  route.params;
+    const {emailDigitado, nomeDigitado, celularDigitado} =  route.params;
 
     //Tratamento de prévia do email para exibição
     const inicialEmail = emailDigitado.substr(0, 1)
     const finalEmail = emailDigitado.split('@')
     const emailFinal = inicialEmail + '*****' + finalEmail[1]
 
+    //O cadastro de um novo beneficiário já inclui a confirmação do email antes disso
+    //portando o código deve ser enviado junto com o corpo do beneficiário.
     const prosseguirCadastro = async(e) =>{
-        //navigation.navigate('CadastroConclusao')
 
         try{
-            
-            //Verifica se o código digitado corresponde
-            //ao código salvo no perfil que está tentando logar
-            const response = await autenticarCodigo(codigo)
 
-            //Se a resposta retornar 200 OK, encaminha para a próxima página
+           const beneficiario = {
+                nome: nomeDigitado,
+                email: emailDigitado,
+                celular: celularDigitado,
+                codigo: codigo
+            }
+
+            const response = await cadastrarBeneficiario(beneficiario)
+
             if(response.ok){
                 navigation.navigate('CadastroConclusao')
             }else{

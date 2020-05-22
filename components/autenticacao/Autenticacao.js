@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -12,27 +12,44 @@ import { AppLoading } from 'expo';
 import FloatingLabelInput from '../tools/FloatingLabelInputWhite'
 
 //Importando serviços
-import { autenticarCpf } from '../../services/auth-service'
+import { isSignedIn, autenticarCpf } from '../../services/auth-service'
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
 //Importando toast simples para avisos de validação
 
 const TelaAutenticacao = ({navigation}, props) =>{
 
+    useEffect(() => {
+        const session = isSignedIn()
+        if(session.length){
+            //Atualmente mandando para a Index, mas é só pra exemplo
+            //Futuramente deve enviar para a Home
+            navigation.navigate('AutenticacaoPerfil')
+        }
+    });
+
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [cpf, setCpf] = useState('');
     const [email, setEmail] = useState('')
+    const [loading, setLoading] = useState(false);
 
     const autenticarCpfFunc = async(e) => {
+
+         //Atualizando tela com loading
+         setLoading(true);
 
         //O retorno vazio encerra a thread do código
         if(!validar()) return
 
         try{
-            
+
             //Realiza a solicitação do serviço de autenticação por CPF
             const response = await autenticarCpf(cpf)
+
+             //Atualizando tela com loading
+             setLoading(false);
         
             //Se a resposta voltar com status 200 OK, 
             //retira a informação de email da promessa
@@ -61,23 +78,6 @@ const TelaAutenticacao = ({navigation}, props) =>{
         }
         
     }
-
-    //Método para definir todas as ações no evento de entrada
-    /*const receberCodigoSms = async (e) =>{
-
-        //envio dos dados para a API, temporariamente bloqueado
-        
-        const usuario = this.state
-        const response = await signIn(usuario)
-
-        if(response.ok){
-            navigation.navigate('AutenticacaoSms')
-        }
-        
-
-        //comando temporário
-        navigation.navigate('AutenticacaoSms')
-    }*/
 
     const validar = () =>{
         if(!cpf){
@@ -118,12 +118,6 @@ const TelaAutenticacao = ({navigation}, props) =>{
     setLoadingComplete(true);
     }
 
-    /*
-    const receberCodigoSms = (e) =>{
-        cpf ? navigation.navigate('AutenticacaoSms') :  console.log('Digite o CPF');
-    }
-*/
-
     return (
         <View style={styles.container}>
            <Image
@@ -131,17 +125,36 @@ const TelaAutenticacao = ({navigation}, props) =>{
           source={require('../../assets/logo/logo_png_light.png')}
         />
 
+        <View
+            style={[
+              styles.containerLoading,
+              {
+                backgroundColor: loading
+                  ? "#CCCCCC55"
+                  : "#FFFFFF00",
+              },
+            ]}
+        >
+            <ActivityIndicator
+              size="large"
+              animating={loading}
+              color="#005E80"
+            />
+        </View>
+
         <FloatingLabelInput
             label="Digite seu CPF ^^"
             value={cpf ? cpf : ''}
             onChangeText={(texto) => setCpf(texto)}
             maxLength={11}
             keyboardType={'numeric'}
+            editable={loading ? false : true}
         />
 
         <TouchableOpacity
          style={styles.button}
          onPress={autenticarCpfFunc}
+         disabled={ loading ? true : false}
         >
          <Text style={styles.button_texto}> ENTRAR</Text>
        </TouchableOpacity>
@@ -162,6 +175,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         justifyContent: "space-around"
+    },
+    containerLoading: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
     },
     image_logo: {
         width: 200,

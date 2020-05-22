@@ -7,11 +7,21 @@ import { AppLoading } from 'expo';
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const TelaAutenticacaoPerfil = ({navigation}, props) =>{
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
+
+    //Funções de direcionamento
+    const direcionarBeneficiario = () => {
+        navigation.navigate('HomeBeneficiario');
+    }
+
+    const direcionarCompanheiro = () => {
+        navigation.navigate('HomeCompanheiro');
+    }
 
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
@@ -56,15 +66,21 @@ const TelaAutenticacaoPerfil = ({navigation}, props) =>{
          <View style={styles.container_perfis}>
             <View style={styles.container_perfil}>
                 <Text style={styles.texto}>BENEFICIÁRIO</Text>
-                <Image
-            style={styles.image_perfil}
-            source={require('../../assets/images/old_client.png')}/>
+                <TouchableWithoutFeedback onPress={direcionarBeneficiario}>
+                    <Image
+                        style={styles.image_perfil}
+                        source={require('../../assets/images/old_client.png')}
+                    />
+                </TouchableWithoutFeedback>
             </View>
             <View style={styles.container_perfil}>
                 <Text style={styles.texto}>COMPANHEIRO</Text>
+                <TouchableWithoutFeedback onPress={direcionarCompanheiro}>
                 <Image
-            style={styles.image_perfil}
-            source={require('../../assets/images/old_profissional.png')}/>    
+                    style={styles.image_perfil}
+                    source={require('../../assets/images/old_profissional.png')}
+                />
+                </TouchableWithoutFeedback>    
             </View>
          </View> 
 

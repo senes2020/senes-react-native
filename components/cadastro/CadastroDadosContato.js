@@ -14,7 +14,7 @@ import FloatingLabelInput from '../tools/FloatingLabelInputBlue'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 //Importando serviços
-import { cadastrar } from '../../services/cadastro-service'
+import { cadastrarUsuario } from '../../services/cadastro-service'
 
 const TelaCadastroDadosContato = ({route, navigation}, props) => {
 
@@ -28,18 +28,16 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
 
     const prosseguirCadastro = async(e) => {
 
-        //Montagem de objeto para cadastro de beneficiário
-        const beneficiario = {
-            nome: nomeDigitado,
-            cpf: cpfDigitado,
-            email: email,
-            celular: celular
+        //Montagem de usuário para cadastro
+       const usuario = {
+            cpfCadastro: cpfDigitado,
+            emailCadastro: email,
         }
 
         try{
             
             //Realiza a solicitação do serviço de cadastro
-            const response = await cadastrar(beneficiario)
+            const response = await cadastrarUsuario(usuario)
         
             //Se a resposta voltar com status 200 OK, 
             //retira a informação de email da promessa
@@ -50,7 +48,9 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
                 //Pasar para próxima página coletando o email
                 navigation.navigate('CadastroConfirmacaoEmail',
                 {
-                    emailDigitado: email
+                    nomeDigitado: nomeDigitado,
+                    emailDigitado: email,
+                    celularDigitado: celular
                 })
 
             }else{

@@ -2,7 +2,7 @@ import {doRequest} from './doRequest'
 import { AsyncStorage } from 'react-native'
 
 //Definindo chave para salvar o dado no WebStorage
-const SESSION_KEY = '@senes:session'
+const SESSION_KEY = '@senesapp:session'
 
 const setSession = (usuario) => {
     AsyncStorage.setItem(SESSION_KEY, JSON.stringify(usuario))
@@ -19,11 +19,9 @@ const setSession = (usuario) => {
 //retornando a response e setando o token no webStorage
 export const autenticarCpf = async (cpf) =>{
 
-    const response = await doRequest('autenticar/cpf/', 'GET', '', cpf)
+    const response = await doRequest('senes/usuario/autenticar/cpf/', 'GET', '', cpf)
 
     if(response.ok){
-        //const usuario = await response.json()
-        //setSession(usuario)
         console.log('retornou response')
     }else{
         console.log('não retornou response')
@@ -36,7 +34,7 @@ export const autenticarCpf = async (cpf) =>{
 //retornando a response e setando o token no webStorage
 export const autenticarCodigo = async (codigo) =>{
 
-    const response = await doRequest('autenticar/codigo/', 'GET', '', codigo)
+    const response = await doRequest('senes/usuario/autenticar/codigo/', 'GET', '', codigo)
 
     if(response.ok){
         //const usuario = await response.json()
@@ -48,7 +46,6 @@ export const autenticarCodigo = async (codigo) =>{
 
 //Verifica se o usuário está logado através da existência do Token
 export const isSignedIn = async () =>{
-
     const session = await AsyncStorage.getItem(SESSION_KEY)
     return JSON.parse(session)
 }

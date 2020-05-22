@@ -30,6 +30,7 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [codigo, setCodigo] = useState('')
 
+    //Código de autenticação de código recebido por email
     const autenticarCodigoFunc = async(e) => {
 
         //O retorno vazio encerra a thread do código
@@ -39,14 +40,24 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
             
             //Verifica se o código digitado corresponde
             //ao código salvo no perfil que está tentando logar
-            const response = await autenticarCodigo(codigo)
+            //Se retornar o usuário definir qual será o direcionamento de Home necessário
+            const responseCodigo = await autenticarCodigo(codigo)
 
-            //Se a resposta retornar 200 OK, encaminha para a próxima página
-            if(response.ok){
-                navigation.navigate('AutenticacaoPerfil')
-            }else{
-                console.log('não vai rolar, kirido')
-            }
+            responseCodigo.json().then((json) => {
+                
+                const tipoPerfilBeneficiario = json.flgBeneficiario;
+                const tipoPerfilCompanheiro = json.flgCompanheiro;
+                
+                if(tipoPerfilBeneficiario == '1' && tipoPerfilCompanheiro == '1'){
+                    navigation.navigate('AutenticacaoPerfil');    
+                }else{
+                    if(tipoPerfilBeneficiario == '1'){
+                        navigation.navigate('HomeBeneficiario');
+                    }else{
+                        navigation.navigate('HomeCompanheiro');
+                    }
+                }
+            })
 
         }catch(erro){
             console.log('entrei no catch')
@@ -93,12 +104,6 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
     function handleFinishLoading(setLoadingComplete) {
     setLoadingComplete(true);
     }
-
-    /*
-    const escolherPerfilAutenticacao = (e) =>{
-        codigo ? navigation.navigate('AutenticacaoPerfil') : console.log('Digite o sms')
-    }
-    */
 
     return (
         <View style={styles.container}>
