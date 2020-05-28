@@ -36,17 +36,17 @@ class FloatingLabelInput extends Component {
       }),
       color: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
-        outputRange: ['#aaa', '#fff'],
+        outputRange: ['#d1d1d1', '#fff'],
       }),
     };
     return (
-      <View style={{ paddingTop: 18, margin: 30  }}>
+      <View style={{ paddingTop: 25, margin: 30  }}>
         <Animated.Text style={labelStyle}>
           {label}
         </Animated.Text>
         <TextInput
           {...props}
-          style={{ height: 26, fontSize: 20, color: '#FFF', borderBottomWidth: 1, borderBottomColor: '#FFF' }}
+          style={{ height: 26, fontSize: 20, color: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: '#FFF' }}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           blurOnSubmit

@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, {useState} from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -13,6 +13,7 @@ import FloatingLabelInput from '../tools/FloatingLabelInputWhite'
 
 //Importando serviços
 import { autenticarCodigo } from '../../services/auth-service'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
 //Importando toast simples para avisos de validação
@@ -29,9 +30,13 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [codigo, setCodigo] = useState('')
+    const [loading, setLoading] = useState(false)
 
     //Código de autenticação de código recebido por email
     const autenticarCodigoFunc = async(e) => {
+
+        //Atualizando tela com loading
+        setLoading(true);
 
         //O retorno vazio encerra a thread do código
         if(!validar()) return
@@ -42,6 +47,9 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
             //ao código salvo no perfil que está tentando logar
             //Se retornar o usuário definir qual será o direcionamento de Home necessário
             const responseCodigo = await autenticarCodigo(codigo)
+
+            //Atualizando tela sem loading
+            setLoading(false);
 
             responseCodigo.json().then((json) => {
                 
@@ -66,7 +74,7 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
         
     }
 
-    validar = () =>{
+    const validar = () =>{
         if(!codigo){
             Alert.alert('Por gentileza, digite um código válido')
             return false
@@ -106,11 +114,34 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
     }
 
     return (
-        <View style={styles.container}>
+        <KeyboardAwareScrollView
+            //style={styles.container}
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            contentContainerStyle={styles.container}
+            scrollEnabled={false}
+        >
            <Image
           style={styles.image_logo}
           source={require('../../assets/logo/logo_png_light.png')}
         />
+
+            <View
+                style={[
+                styles.containerLoading,
+                {
+                    backgroundColor: loading
+                    ? "#CCCCCC55"
+                    : "#FFFFFF00",
+                },
+                ]}
+            >
+                <ActivityIndicator
+                size="large"
+                animating={loading}
+                color="#005E80"
+                />
+            </View>
+
          <Text style={styles.texto}>
             Enviamos um código para o seu email com final {emailFinal} cadastrado.
             Confirme que você é o dono dele ^^
@@ -122,11 +153,13 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
             onChangeText={(texto) => setCodigo(texto)}
             maxLength={5}
             keyboardType={'numeric'}
+            editable={loading ? false : true}
         />
 
         <TouchableOpacity
          style={styles.button}
          onPress={autenticarCodigoFunc}
+         disabled={loading ? true : false}
         >
          <Text style={styles.button_texto}> CONFIRMAR</Text>
        </TouchableOpacity>
@@ -134,10 +167,13 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
        <TouchableOpacity
          style={styles.button_info}
         >
-         <Text style={styles.button_texto}>i</Text>
+         <Image
+            style={styles.image_info}
+            source={require('../../assets/icons/ajuda_branco.png')}
+         />
        </TouchableOpacity>
 
-        </View>
+       </KeyboardAwareScrollView>
       );
 }
 
@@ -147,6 +183,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         justifyContent: "space-between"
+    },
+    containerLoading: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
     },
     texto:{
         fontFamily: "montserrat-regular-texto",
@@ -186,7 +228,13 @@ const styles = StyleSheet.create({
         margin: 30,
         borderColor: "#FFFFFF",
         borderWidth: 2,
-        borderRadius: 60
+        borderRadius: 60,
+        justifyContent: "center"
+    },
+    image_info: {
+        width: 50,
+        resizeMode: "contain",
+        alignSelf: "center"
     },
     button_texto:{
         fontFamily: "montserrat-regular-texto",

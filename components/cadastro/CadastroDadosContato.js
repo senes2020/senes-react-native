@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image} from 'react-native'
+import { StyleSheet, Text, View, Image, ActivityIndicator} from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -22,11 +22,15 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [email, setEmail] = useState('');
     const [celular, setCelular] = useState('');
+    const [loading, setLoading] = useState(false);
 
     //Coleta de dados digitados em outra tela
     const {nomeDigitado, cpfDigitado} =  route.params;
 
     const prosseguirCadastro = async(e) => {
+
+        //Atualizando tela com loading
+        setLoading(true);
 
         //Montagem de usuário para cadastro
        const usuario = {
@@ -38,6 +42,9 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
             
             //Realiza a solicitação do serviço de cadastro
             const response = await cadastrarUsuario(usuario)
+
+            //Atualizando tela sem loading
+            setLoading(false);
         
             //Se a resposta voltar com status 200 OK, 
             //retira a informação de email da promessa
@@ -96,13 +103,31 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
 
     return (
         <View style={styles.container}>
+
+            <View
+                style={[
+                styles.containerLoading,
+                {
+                    backgroundColor: loading
+                    ? "#CCCCCC55"
+                    : "#FFFFFF00",
+                },
+                ]}
+            >
+                <ActivityIndicator
+                size="large"
+                animating={loading}
+                color="#005E80"
+                />
+            </View>
+
             <Text style={styles.texto}>Muito prazer, {nomeDigitado}! ^^</Text>
             <Text style={styles.texto}>Se precisarmos, como podemos falar contigo?</Text>
             <FloatingLabelInput
                 label="Digite seu melhor email"
                 value={email ? email : ''}
                 onChangeText={(texto) => setEmail(texto)}
-                
+                editable={loading ? false: true}
             />
             <FloatingLabelInput
                 label="Digite seu número de celular"
@@ -110,6 +135,7 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
                 onChangeText={(texto) => setCelular(texto)}
                 maxLength={11}
                 keyboardType={'numeric'}
+                editable={loading ? false: true}
             />
             <Image
                 style={styles.image}
@@ -118,6 +144,7 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={prosseguirCadastro}
+                disabled={loading ? true : false}
                 >
                 <Text style={styles.button_texto}>ENVIAR</Text>
             </TouchableOpacity>
@@ -132,6 +159,12 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "space-around",
     },
+    containerLoading: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+    },
     texto: {
         color: "#005E80",
         fontFamily: "montserrat-regular-texto",
@@ -140,8 +173,8 @@ const styles = StyleSheet.create({
         margin: 30
     },
     image: {
-        width: 250,
-        height: 250,
+        width: 150,
+        height: 150,
         alignSelf: 'center'
     },
     button: {

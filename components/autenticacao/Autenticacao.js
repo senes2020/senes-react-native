@@ -13,7 +13,8 @@ import FloatingLabelInput from '../tools/FloatingLabelInputWhite'
 
 //Importando serviços
 import { isSignedIn, autenticarCpf } from '../../services/auth-service'
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
 //Importando toast simples para avisos de validação
@@ -48,7 +49,7 @@ const TelaAutenticacao = ({navigation}, props) =>{
             //Realiza a solicitação do serviço de autenticação por CPF
             const response = await autenticarCpf(cpf)
 
-             //Atualizando tela com loading
+             //Atualizando tela sem loading
              setLoading(false);
         
             //Se a resposta voltar com status 200 OK, 
@@ -119,11 +120,16 @@ const TelaAutenticacao = ({navigation}, props) =>{
     }
 
     return (
-        <View style={styles.container}>
+        <KeyboardAwareScrollView
+            //style={styles.container}
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            contentContainerStyle={styles.container}
+            scrollEnabled={false}
+        >
            <Image
-          style={styles.image_logo}
-          source={require('../../assets/logo/logo_png_light.png')}
-        />
+            style={styles.image_logo}
+            source={require('../../assets/logo/logo_png_light.png')}
+           />
 
         <View
             style={[
@@ -162,10 +168,13 @@ const TelaAutenticacao = ({navigation}, props) =>{
        <TouchableOpacity
          style={styles.button_info}
         >
-         <Text style={styles.button_texto}>i</Text>
+         <Image
+            style={styles.image_info}
+            source={require('../../assets/icons/ajuda_branco.png')}
+         />
        </TouchableOpacity>
 
-        </View>
+       </KeyboardAwareScrollView>
       );
 }
 
@@ -180,7 +189,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         width: "100%",
         height: "100%",
-        justifyContent: "center",
+        justifyContent: "center"
     },
     image_logo: {
         width: 200,
@@ -200,7 +209,13 @@ const styles = StyleSheet.create({
         margin: 30,
         borderColor: "#FFFFFF",
         borderWidth: 2,
-        borderRadius: 60
+        borderRadius: 60,
+        justifyContent: "center"
+    },
+    image_info: {
+        width: 50,
+        resizeMode: "contain",
+        alignSelf: "center"
     },
     button_texto:{
         fontFamily: "montserrat-regular-texto",

@@ -1,5 +1,5 @@
 //SEMPRE QUE MANDAR PRO GIT ESCONDER O IP
-const URL = 'http://:8080/'
+const URL = 'http://192.168.0.103:8080/'
 
 //Determinando um valor padrão para o body 
 export const doRequest = async (resource, method, body = '', urlParam = '') =>{

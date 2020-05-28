@@ -69,7 +69,7 @@ const TelaAutenticacaoPerfil = ({navigation}, props) =>{
                 <TouchableWithoutFeedback onPress={direcionarBeneficiario}>
                     <Image
                         style={styles.image_perfil}
-                        source={require('../../assets/images/old_client.png')}
+                        source={require('../../assets/images/beneficiario-login.png')}
                     />
                 </TouchableWithoutFeedback>
             </View>
@@ -78,16 +78,19 @@ const TelaAutenticacaoPerfil = ({navigation}, props) =>{
                 <TouchableWithoutFeedback onPress={direcionarCompanheiro}>
                 <Image
                     style={styles.image_perfil}
-                    source={require('../../assets/images/old_profissional.png')}
+                    source={require('../../assets/images/acompanhante-login.png')}
                 />
                 </TouchableWithoutFeedback>    
             </View>
          </View> 
 
-        <TouchableOpacity
+         <TouchableOpacity
          style={styles.button_info}
         >
-         <Text style={styles.button_texto}>i</Text>
+         <Image
+            style={styles.image_info}
+            source={require('../../assets/icons/ajuda_branco.png')}
+         />
         </TouchableOpacity>
 
         </View>
@@ -141,7 +144,13 @@ const styles = StyleSheet.create({
         margin: 30,
         borderColor: "#FFFFFF",
         borderWidth: 2,
-        borderRadius: 60
+        borderRadius: 60,
+        justifyContent: "center"
+    },
+    image_info: {
+        width: 50,
+        resizeMode: "contain",
+        alignSelf: "center"
     },
     button_texto:{
         fontFamily: "montserrat-regular-texto",

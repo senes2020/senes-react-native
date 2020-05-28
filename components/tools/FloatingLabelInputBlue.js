@@ -46,7 +46,7 @@ class FloatingLabelInput extends Component {
         </Animated.Text>
         <TextInput
           {...props}
-          style={{ height: 26, fontSize: 20, color: '#005E80', borderBottomWidth: 1, borderBottomColor: '#005E80' }}
+          style={{ height: 30, fontSize: 20, color: '#005E80', borderBottomWidth: 1, borderBottomColor: '#005E80' }}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           blurOnSubmit

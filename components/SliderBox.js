@@ -9,10 +9,11 @@ export default class SliderBoxComponent extends Component {
       super(props);
       this.state = {
         images: [
-          require('../assets/images/imagem_abertura.jpg'),
-          require('../assets/images/imagem_abertura.jpg'),
-          require('../assets/images/imagem_abertura.jpg'),
-          require('../assets/images/imagem_abertura.jpg')
+          require('../assets/images/slide-1.jpg'),
+          require('../assets/images/slide-2.jpg'),
+          require('../assets/images/slide-3.jpg'),
+          require('../assets/images/slide-4.jpg'),
+          require('../assets/images/slide-5.jpg')
         ]
       };
     }

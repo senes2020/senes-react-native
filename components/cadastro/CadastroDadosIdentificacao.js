@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
         margin: 30
     },
     image: {
-        width: 250,
-        height: 250,
+        width: 150,
+        height: 150,
         alignSelf: 'center'
     },
     button: {

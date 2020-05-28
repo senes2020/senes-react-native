@@ -116,8 +116,11 @@ const PaginaInicial = ({navigation}, props) =>{
                 <View style={styles.container_info}>
                     <TouchableOpacity>
                         <View style={styles.container_link}>
-                            <View style={styles.button_circular}>
-                                <Text style={styles.button_texto}>i</Text>
+                            <View style={styles.button_circular_info}>
+                                <Image
+                                    style={styles.button_info}
+                                    source={require('../assets/icons/informacoes.png')}
+                                />
                             </View>
                             <Text style={styles.descricao_texto}>INFORMAÇÕES</Text>
                         </View>
@@ -180,6 +183,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    button_circular_info: {
+        height: 45,
+        width: 45,
+        borderColor: 'transparent',
+        borderWidth: 2,
+        borderRadius: 60,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     button_texto:{
         fontFamily: "montserrat-negrito",
         color: "#005E80",
@@ -188,6 +200,10 @@ const styles = StyleSheet.create({
     },
     button_imagem: {
         height: 25,
+        resizeMode: "contain"
+    },
+    button_info: {
+        height: 50,
         resizeMode: "contain"
     },
     descricao_texto: {

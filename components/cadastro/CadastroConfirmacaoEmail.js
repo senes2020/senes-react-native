@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image} from 'react-native'
+import { StyleSheet, Text, View, Image, ActivityIndicator} from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -22,6 +22,7 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [codigo, setCodigo] = useState('');
+    const [loading, setLoading] = useState(false);
 
     //Coleta de dados de outras telas para passagem de parâmetros
     const {emailDigitado, nomeDigitado, celularDigitado} =  route.params;
@@ -35,6 +36,9 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
     //portando o código deve ser enviado junto com o corpo do beneficiário.
     const prosseguirCadastro = async(e) =>{
 
+        //Atualizando tela com loading
+        setLoading(true);
+
         try{
 
            const beneficiario = {
@@ -45,6 +49,9 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
             }
 
             const response = await cadastrarBeneficiario(beneficiario)
+
+            //Atualizando tela sem loading
+            setLoading(false);
 
             if(response.ok){
                 navigation.navigate('CadastroConclusao')
@@ -91,6 +98,20 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
 
     return (
         <View style={styles.container}>
+            <View
+                style={[
+                styles.containerLoading,
+                {
+                    backgroundColor: loading ? "#CCCCCC55" : "#FFFFFF00",
+                },
+                ]}
+            >
+                <ActivityIndicator
+                size="large"
+                animating={loading}
+                color="#005E80"
+                />
+            </View>
             <Text style={styles.texto}>Enviamos um código pro seu email cadastrado com final {emailFinal} só pra confirmar, pode verificar se chegou?</Text>
             <FloatingLabelInput
                 label="Digite o código enviado"
@@ -98,6 +119,7 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
                 onChangeText={(texto) => setCodigo(texto)}
                 keyboardType={'numeric'}
                 maxLength={5}
+                editable={loading ? false: true}
             />
             <Image
                 style={styles.image}
@@ -106,6 +128,7 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={prosseguirCadastro}
+                disabled={ loading ? true : false}
                 >
                 <Text style={styles.button_texto}>CONFIRMAR</Text>
             </TouchableOpacity>
@@ -120,6 +143,12 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "space-around",
     },
+    containerLoading: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+    },
     texto: {
         color: "#005E80",
         fontFamily: "montserrat-regular-texto",
@@ -128,8 +157,8 @@ const styles = StyleSheet.create({
         margin: 30
     },
     image: {
-        width: 250,
-        height: 250,
+        width: 150,
+        height: 150,
         alignSelf: 'center'
     },
     button: {
