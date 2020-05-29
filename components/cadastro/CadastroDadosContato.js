@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, ActivityIndicator} from 'react-native'
+import { StyleSheet, Text, View, Image, ActivityIndicator, Alert} from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -27,7 +27,66 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
     //Coleta de dados digitados em outra tela
     const {nomeDigitado, cpfDigitado} =  route.params;
 
+    //Função de validação de celular
+    const validarCelular = (celular) => {
+        if(!celular.match(/^[1-9]{1}[0-9]{10,14}$/)){
+            Alert.alert(
+                "Erro de Cadastro :(",
+                "Por gentileza, preencha o celular com um número válido.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+            );
+            return false
+        }
+
+        return true
+    }
+
+    //Função de validação do email
+    const validarEmail = (email) => {
+        if(!email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)){
+            Alert.alert(
+                "Erro de Cadastro :(",
+                "Por gentileza, preencha o email com um endereço válido.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+            );
+            return false
+        }
+    
+        return true
+    }
+
+    //Função de validação
+    const validar = () =>{
+        if(!celular || !email){
+            Alert.alert(
+                "Erro de Cadastro :(",
+                "Por gentileza, preencha todos os campos antes de prosseguir.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+            );
+            return false
+        }else{
+            if(validarCelular(celular) && validarEmail(email)){
+                return true;
+            }
+        }
+    }
+
     const prosseguirCadastro = async(e) => {
+
+        //O retorno vazio encerra a thread do código
+        if(!validar()) return
 
         //Atualizando tela com loading
         setLoading(true);
@@ -175,6 +234,7 @@ const styles = StyleSheet.create({
     image: {
         width: 150,
         height: 150,
+        margin: 20,
         alignSelf: 'center'
     },
     button: {

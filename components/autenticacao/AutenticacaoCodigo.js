@@ -51,21 +51,37 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
             //Atualizando tela sem loading
             setLoading(false);
 
-            responseCodigo.json().then((json) => {
+            //Se a resposta voltar com status 200 OK, 
+            //prossegue, senão dá mensagem
+            if(responseCodigo.ok){
                 
-                const tipoPerfilBeneficiario = json.flgBeneficiario;
-                const tipoPerfilCompanheiro = json.flgCompanheiro;
+                responseCodigo.json().then((json) => {
                 
-                if(tipoPerfilBeneficiario == '1' && tipoPerfilCompanheiro == '1'){
-                    navigation.navigate('AutenticacaoPerfil');    
-                }else{
-                    if(tipoPerfilBeneficiario == '1'){
-                        navigation.navigate('HomeBeneficiario');
+                    const tipoPerfilBeneficiario = json.flgBeneficiario;
+                    const tipoPerfilCompanheiro = json.flgCompanheiro;
+                    
+                    if(tipoPerfilBeneficiario == '1' && tipoPerfilCompanheiro == '1'){
+                        navigation.navigate('AutenticacaoPerfil');    
                     }else{
-                        navigation.navigate('HomeCompanheiro');
+                        if(tipoPerfilBeneficiario == '1'){
+                            navigation.navigate('HomeBeneficiario');
+                        }else{
+                            navigation.navigate('HomeCompanheiro');
+                        }
                     }
-                }
-            })
+                })
+            }else if(responseCodigo.status == 404){
+                
+                Alert.alert(
+                "Erro de Autenticação :(",
+                "Por gentileza, reveja seu código enviado ou, se não tiver acesso a esse email, cadastre um novo endereço.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+                );
+            }
 
         }catch(erro){
             console.log('entrei no catch')

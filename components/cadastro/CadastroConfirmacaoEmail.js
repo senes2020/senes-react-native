@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, ActivityIndicator} from 'react-native'
+import { StyleSheet, Text, View, Image, ActivityIndicator, Alert} from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -55,6 +55,16 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
 
             if(response.ok){
                 navigation.navigate('CadastroConclusao')
+            }else if(response.status == 404){
+                Alert.alert(
+                    "Erro de Confirmação de Cadastro :(",
+                    "Por gentileza, reveja seu código enviado ou, se não tiver acesso a esse email, cadastre um novo endereço.",
+                    [
+                        
+                        { text: "OK"}
+                    ],
+                    { cancelable: false }
+                );
             }else{
                 console.log('não vai rolar, kirido')
             }

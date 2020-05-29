@@ -21,7 +21,7 @@ export const autenticarCpf = async (cpf) =>{
 
     const response = await doRequest('senes/usuario/autenticar/cpf/', 'GET', '', cpf)
 
-    if(response.ok){
+    if(response.status != 500){
         console.log('retornou response')
     }else{
         console.log('não retornou response')

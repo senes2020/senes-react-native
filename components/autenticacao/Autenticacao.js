@@ -36,18 +36,138 @@ const TelaAutenticacao = ({navigation}, props) =>{
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false);
 
+    //Função para aplicar máscara do CPF e setar no state
+    const setarCpf = (texto) => {
+
+        //Aplicando máscara de CPF
+        let novoTexto = texto.replace(/\D/g, '') // substitui qualquer caracter que nao seja numero por nada
+        .replace(/(\d{3})(\d)/, '$1.$2') // captura 2 grupos de numero o primeiro de 3 e o segundo de 1, apos capturar o primeiro grupo ele adiciona um ponto antes do segundo grupo de numero
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+        .replace(/(-\d{2})\d+?$/, '$1') // captura 2 numeros seguidos de um traço e não deixa ser digitado mais nada
+    
+        //Setando CPF com máscara
+        setCpf(novoTexto)
+    }
+
+    //Função para validação de CPF
+    const validarCpf = (strCPF) => {
+        let resto;
+        let soma = 0;
+
+        if(strCPF.length < 11){
+            Alert.alert(
+                "Erro de Autenticação :(",
+                "Por gentileza, digite um CPF com no mínimo 11 caracteres.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+            );
+            return false
+        }
+        
+        if(strCPF == "00000000000" || strCPF == "11111111111" || strCPF == "22222222222"
+        || strCPF == "33333333333" || strCPF == "44444444444" || strCPF == "55555555555"
+        || strCPF == "66666666666" || strCPF == "77777777777" || strCPF == "88888888888"
+        || strCPF == "99999999999"){
+            Alert.alert(
+                "Erro de Autenticação :(",
+                "Por gentileza, digite um CPF válido.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+            );
+            return false;
+        } 
+         
+        for(let i=1; i<=9; i++){
+            soma = soma + parseInt(strCPF.substring(i-1, i)) * (11 - i);
+            resto = (soma * 10) % 11;
+        } 
+       
+        if ((resto == 10) || (resto == 11))  resto = 0;
+        if (resto != parseInt(strCPF.substring(9, 10)) ){
+            Alert.alert(
+                "Erro de Autenticação :(",
+                "Por gentileza, digite um CPF válido.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+            );
+            return false;
+        } 
+       
+        soma = 0;
+        for(let i = 1; i <= 10; i++){
+            soma = soma + parseInt(strCPF.substring(i-1, i)) * (12 - i);
+            resto = (soma * 10) % 11;
+        } 
+       
+        if ((resto == 10) || (resto == 11))  resto = 0;
+        if (resto != parseInt(strCPF.substring(10, 11) ) ){
+            Alert.alert(
+                "Erro de Autenticação :(",
+                "Por gentileza, digite um CPF válido.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+    const validar = () =>{
+        
+        if(!cpf){
+            Alert.alert(
+                "Erro de Autenticação :(",
+                "Por gentileza, preencha todos os campos antes de prosseguir.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+            );
+            return false
+        }else{
+
+            //Limpando máscara do CPF
+            let cpfUsuario = cpf.replace(/\./g, '').replace(/-/g, '');
+
+            if(validarCpf(cpfUsuario)){
+                return true;
+            }
+        }
+    }
+
     const autenticarCpfFunc = async(e) => {
 
          //Atualizando tela com loading
          setLoading(true);
 
         //O retorno vazio encerra a thread do código
-        if(!validar()) return
+        if(!validar()){
+            setLoading(false);
+            return
+        } 
 
         try{
 
+            //Limpando máscara do CPF
+            let cpfUsuario = cpf.replace(/\./g, '').replace(/-/g, '');
+
             //Realiza a solicitação do serviço de autenticação por CPF
-            const response = await autenticarCpf(cpf)
+            const response = await autenticarCpf(cpfUsuario)
 
              //Atualizando tela sem loading
              setLoading(false);
@@ -69,6 +189,19 @@ const TelaAutenticacao = ({navigation}, props) =>{
                         })
                 })
 
+            }else if(response.status == 404){
+                Alert.alert(
+                    "CPF não encontrado :(",
+                    "Vejo que seu CPF ainda não está com a gente, gostaria de se cadastrar?",
+                    [
+                      {
+                        text: "Cancelar",
+                        
+                      },
+                      { text: "Me cadastre ^^", onPress: () => navigation.navigate('CadastroIntro') }
+                    ],
+                    { cancelable: true }
+                  );
             }else{
                 console.log('não vai rolar, kirido')
             }
@@ -78,15 +211,6 @@ const TelaAutenticacao = ({navigation}, props) =>{
             console.log(erro)
         }
         
-    }
-
-    const validar = () =>{
-        if(!cpf){
-            Alert.alert('Por gentileza, digite um CPF válido')
-            return false
-        }else{
-            return true
-        }
     }
 
     //Código para carregamento das fontes antes da renderização
@@ -151,8 +275,8 @@ const TelaAutenticacao = ({navigation}, props) =>{
         <FloatingLabelInput
             label="Digite seu CPF ^^"
             value={cpf ? cpf : ''}
-            onChangeText={(texto) => setCpf(texto)}
-            maxLength={11}
+            onChangeText={(texto) => setarCpf(texto)}
+            maxLength={14}
             keyboardType={'numeric'}
             editable={loading ? false : true}
         />

@@ -30,11 +30,12 @@ export const cadastrarBeneficiario = async (beneficiario) => {
     //função genérica que realiza as requisições
     const response = await doRequest('senes/beneficiario/registrar/', 'POST', beneficiario)
     
-    if(response.ok){
+    if(response.status != 500){
         //const usuario = await response.json()
         //setSession(usuario)
     }else{
         console.log('não deu ok')
+        console.log(response.status)
     }
 
     return response
