@@ -17,6 +17,9 @@ import TelaCadastroConfirmacaoEmail from './cadastro/CadastroConfirmacaoEmail';
 import TelaCadastroConclusao from './cadastro/CadastroConclusao';
 import TelaHomeBeneficiario from './home/HomeBeneficiario';
 import TelaHomeCompanheiro from './home/HomeCompanheiro';
+import TelaAtualizarEmailAcesso from './autenticacao/AtualizarEmailAcesso';
+import TelaConfirmacaoCodigoNovoEmail from './autenticacao/ConfirmacaoAtualizacaoEmail';
+import TelaAtualizarEmailEsquecimento from './autenticacao/AtualizarEmailEsquecimento';
 
 const Stack = createStackNavigator();
 
@@ -82,6 +85,21 @@ export default function MyStack(){
                 <Stack.Screen
                     name="HomeCompanheiro"
                     component={TelaHomeCompanheiro}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="AtualizarEmailAcesso"
+                    component={TelaAtualizarEmailAcesso}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="AtualizarEmailEsquecimento"
+                    component={TelaAtualizarEmailEsquecimento}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="ConfirmacaoAtualizacaoEmail"
+                    component={TelaConfirmacaoCodigoNovoEmail}
                     options={{headerShown: false}}
                 />
             </Stack.Navigator>

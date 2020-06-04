@@ -12,7 +12,7 @@ import { AppLoading } from 'expo';
 import FloatingLabelInput from '../tools/FloatingLabelInputWhite'
 
 //Importando serviços
-import { autenticarCodigo } from '../../services/auth-service'
+import { autenticarCodigo, verificarFinaisCelularesUsuario } from '../../services/auth-service'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
@@ -22,7 +22,7 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
 
     //Recebe o email do cliente 
     //fragmenta para exibir somente a inicial e o final, por segurança.
-    const {emailRecebido} =  route.params;
+    const {emailRecebido, idUsuarioRecebido, cpfRecebido} =  route.params;
     const inicialEmail = emailRecebido.substr(0, 1)
     const finalEmail = emailRecebido.split('@')
     const emailFinal = inicialEmail + '*****@' + finalEmail[1]
@@ -75,6 +75,69 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
                 Alert.alert(
                 "Erro de Autenticação :(",
                 "Por gentileza, reveja seu código enviado ou, se não tiver acesso a esse email, cadastre um novo endereço.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+                );
+            }
+
+        }catch(erro){
+            console.log('entrei no catch')
+            console.log(erro)
+        }
+        
+    }
+
+    const atualizarEmailAcessoFunc = () => {
+        navigation.navigate(
+            'AtualizarEmailAcesso',
+            {
+                idUsuarioRecebido: idUsuarioRecebido,
+                emailRecebido: emailRecebido,
+                cpfRecebido: cpfRecebido
+            })
+    }
+
+    const atualizarEmailEsquecimentoFunc = async(e) => {
+
+        try{
+            
+            //Verifica os finais de celulares existentes para as entidades
+            //que tenham esse código de usuário
+            const responseCodigo = await verificarFinaisCelularesUsuario(idUsuarioRecebido)
+
+            console.log(codigo)
+
+            //Atualizando tela sem loading
+            setLoading(false);
+
+            //Se a resposta voltar com status 200 OK, 
+            //prossegue, senão dá mensagem
+            if(responseCodigo.ok){
+                
+                responseCodigo.json().then((json) => {
+                
+                    const celularBeneficiario = json.celularBeneficiario;
+                    const celularCompanheiro = json.celularCompanheiro;
+
+                    navigation.navigate(
+                        'AtualizarEmailEsquecimento',
+                        {
+                            idUsuarioRecebido: idUsuarioRecebido,
+                            emailRecebido: emailRecebido,
+                            cpfRecebido: cpfRecebido,
+                            celularBeneficiarioRecebido: celularBeneficiario,
+                            celularCompanheiroRecebido: celularCompanheiro
+                        })
+                    
+                })
+            }else if(responseCodigo.status == 404){
+                
+                Alert.alert(
+                "Erro de Obtenção de dados",
+                "Ooops, erro nosso! Desculpe, estamos melhorando esse serviço. Por favor, notifique os desenvolvedores.",
                 [
                     
                     { text: "OK"}
@@ -173,6 +236,20 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
         />
 
         <TouchableOpacity
+         onPress={atualizarEmailAcessoFunc}
+         disabled={loading ? true : false}
+        >
+            <Text style={styles.texto_pequeno}>Não tenho acesso ao meu email cadastrado</Text>
+       </TouchableOpacity>
+
+       <TouchableOpacity
+         onPress={atualizarEmailEsquecimentoFunc}
+         disabled={loading ? true : false}
+        >
+            <Text style={styles.texto_pequeno}>Esqueci meu email cadastrado</Text>
+       </TouchableOpacity>
+
+        <TouchableOpacity
          style={styles.button}
          onPress={autenticarCodigoFunc}
          disabled={loading ? true : false}
@@ -206,6 +283,7 @@ const styles = StyleSheet.create({
         height: "100%",
         justifyContent: "center",
     },
+    
     texto:{
         fontFamily: "montserrat-regular-texto",
         color: "#FFFFFF",
@@ -215,6 +293,12 @@ const styles = StyleSheet.create({
         marginBottom: 40,
         marginLeft: 20,
         marginRight: 20
+    },
+    texto_pequeno: {
+        fontSize: 15,
+        textAlign: 'right',
+        marginRight: 30,
+        color: "#D9CCCCCC"
     },
     image_logo: {
         width: 200,

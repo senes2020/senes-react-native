@@ -14,50 +14,21 @@ import FloatingLabelInput from '../tools/FloatingLabelInputBlue'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 //Importando serviços
-import { cadastrarUsuario } from '../../services/cadastro-service'
+import { atualizarEmailCodigo } from '../../services/auth-service'
 
-const TelaCadastroDadosContato = ({route, navigation}, props) => {
+const TelaAtualizarEmailAcesso = ({route, navigation}, props) => {
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
-    const [email, setEmail] = useState('');
-    const [celular, setCelular] = useState('');
+    const [emailNovo, setEmailNovo] = useState('');
+    const [emailAntigo, setEmailAntigo] = useState('');
     const [loading, setLoading] = useState(false);
 
     //Coleta de dados digitados em outra tela
-    const {nomeDigitado, cpfDigitado} =  route.params;
+    const {idUsuarioRecebido, emailRecebido, cpfRecebido} =  route.params;
 
-     //Função para aplicar máscara do celular e setar no state
-     const setarCelular = (texto) => {
-
-        //Aplicando máscara de celular
-        let novoTexto = texto.replace(/\D/g,"")             //Remove tudo o que não é dígito
-        .replace(/^(\d{2})(\d)/g,"($1) $2") //Coloca parênteses em volta dos dois primeiros dígitos
-        .replace(/(\d)(\d{4})$/,"$1-$2")
-        
-    
-        //Setando CPF com máscara
-        setCelular(novoTexto)
-    }
-
-    //Função de validação de celular
-    const validarCelular = (celular) => {
-        
-        if(!celular.match(/^[1-9]{1}[0-9]{10,14}$/)){
-            Alert.alert(
-                "Erro de Cadastro :(",
-                "Por gentileza, preencha o celular com um número válido.",
-                [
-                    
-                    { text: "OK"}
-                ],
-                { cancelable: false }
-            );
-            return false
-        }
-
-        return true
-    }
+    //Função de validação de endereço de email antigo
+    const validarEmailAntigo = (email) => email == emailRecebido ? true : false;
 
     //Função de validação do email
     const validarEmail = (email) => {
@@ -79,7 +50,7 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
 
     //Função de validação
     const validar = () =>{
-        if(!celular || !email){
+        if(!emailNovo && !emailAntigo){
             Alert.alert(
                 "Erro de Cadastro :(",
                 "Por gentileza, preencha todos os campos antes de prosseguir.",
@@ -91,20 +62,13 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
             );
             return false
         }else{
-
-            //Limpando máscara de Celular
-            let celularUsuario = celular.replace(/\)/g, '')
-                                        .replace(/\(/g, '')
-                                        .replace(/-/g, '')
-                                        .replace(/\s/g, '')
-
-            if(validarCelular(celularUsuario) && validarEmail(email)){
+            if(validarEmailAntigo(emailAntigo) && validarEmail(emailNovo)){
                 return true;
             }
         }
     }
 
-    const prosseguirCadastro = async(e) => {
+    const atualizarEmail = async(e) => {
 
         //O retorno vazio encerra a thread do código
         if(!validar()) return
@@ -113,15 +77,15 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
         setLoading(true);
 
         //Montagem de usuário para cadastro
-       const usuario = {
-            cpfCadastro: cpfDigitado,
-            emailCadastro: email,
+       const usuarioEmailAtualizado = {
+            cpfAtualizacao: cpfRecebido,
+            emailAtualizacao: emailNovo
         }
 
         try{
             
-            //Realiza a solicitação do serviço de cadastro
-            const response = await cadastrarUsuario(usuario)
+            //Realiza o envio de um código para o novo email a ser cadastrado
+            const response = await atualizarEmailCodigo(usuarioEmailAtualizado, idUsuarioRecebido)
 
             //Atualizando tela sem loading
             setLoading(false);
@@ -131,19 +95,12 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
             //e seta o email no state
             if(response.ok){
 
-                //Limpando máscara de Celular
-                let celularUsuario = celular.replace(/\)/g, '')
-                                            .replace(/\(/g, '')
-                                            .replace(/-/g, '')
-                                            .replace(/\s/g, '')
-
                 //Enviar dados para o Spring cadastrar o novo beneficiário e enviar email
                 //Pasar para próxima página coletando o email
-                navigation.navigate('CadastroConfirmacaoEmail',
+                navigation.navigate('ConfirmacaoAtualizacaoEmail',
                 {
-                    nomeDigitado: nomeDigitado,
-                    emailDigitado: email,
-                    celularDigitado: celularUsuario
+                    emailDigitado: emailNovo,
+                    cpfRecebido: cpfRecebido
                 })
 
             }else{
@@ -207,29 +164,23 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
                 />
             </View>
 
-            <Text style={styles.texto}>Muito prazer, {nomeDigitado}! ^^</Text>
-            <Text style={styles.texto}>Se precisarmos, como podemos falar contigo?</Text>
+            <Text style={styles.texto}>Para atualizar o email, primeiro precisamos confirmar que essa conta é sua</Text>
+            <Text style={styles.texto}>Insira seu antigo email e o novo para cadastro</Text>
             <FloatingLabelInput
-                label="Digite seu melhor email"
-                value={email ? email : ''}
-                onChangeText={(texto) => setEmail(texto)}
+                label="Digite seu email cadastrado"
+                value={emailAntigo ? emailAntigo : ''}
+                onChangeText={(texto) => setEmailAntigo(texto)}
                 editable={loading ? false: true}
             />
             <FloatingLabelInput
-                label="Digite seu número de celular"
-                value={celular ? celular : ''}
-                onChangeText={(texto) => setarCelular(texto)}
-                maxLength={15}
-                keyboardType={'numeric'}
+                label="Digite seu melhor email atual"
+                value={emailNovo ? emailNovo : ''}
+                onChangeText={(texto) => setEmailNovo(texto)}
                 editable={loading ? false: true}
-            />
-            <Image
-                style={styles.image}
-                source={require('../../assets/icons/contact.png')}
             />
             <TouchableOpacity
                 style={styles.button}
-                onPress={prosseguirCadastro}
+                onPress={atualizarEmail}
                 disabled={loading ? true : false}
                 >
                 <Text style={styles.button_texto}>ENVIAR</Text>
@@ -261,7 +212,7 @@ const styles = StyleSheet.create({
     image: {
         width: 150,
         height: 150,
-        marginTop: 20,
+        margin: 20,
         alignSelf: 'center'
     },
     button: {
@@ -281,4 +232,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default TelaCadastroDadosContato
+export default TelaAtualizarEmailAcesso

@@ -14,21 +14,21 @@ import FloatingLabelInput from '../tools/FloatingLabelInputBlue'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 //Importando serviços
-import { cadastrarUsuario } from '../../services/cadastro-service'
+import { atualizarEmailPorNumero } from '../../services/auth-service'
 
-const TelaCadastroDadosContato = ({route, navigation}, props) => {
+const TelaAtualizarEmailEsquecimento = ({route, navigation}, props) => {
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
-    const [email, setEmail] = useState('');
+    const [emailNovo, setEmailNovo] = useState('');
     const [celular, setCelular] = useState('');
     const [loading, setLoading] = useState(false);
 
     //Coleta de dados digitados em outra tela
-    const {nomeDigitado, cpfDigitado} =  route.params;
+    const {idUsuarioRecebido, cpfRecebido, celularBeneficiarioRecebido, celularCompanheiroRecebido} =  route.params;
 
-     //Função para aplicar máscara do celular e setar no state
-     const setarCelular = (texto) => {
+    //Função para aplicar máscara do celular e setar no state
+    const setarCelular = (texto) => {
 
         //Aplicando máscara de celular
         let novoTexto = texto.replace(/\D/g,"")             //Remove tudo o que não é dígito
@@ -79,7 +79,7 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
 
     //Função de validação
     const validar = () =>{
-        if(!celular || !email){
+        if(!emailNovo || !celular){
             Alert.alert(
                 "Erro de Cadastro :(",
                 "Por gentileza, preencha todos os campos antes de prosseguir.",
@@ -91,20 +91,17 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
             );
             return false
         }else{
-
-            //Limpando máscara de Celular
-            let celularUsuario = celular.replace(/\)/g, '')
+             //Limpando máscara de Celular
+             let celularUsuario = celular.replace(/\)/g, '')
                                         .replace(/\(/g, '')
                                         .replace(/-/g, '')
                                         .replace(/\s/g, '')
 
-            if(validarCelular(celularUsuario) && validarEmail(email)){
-                return true;
-            }
+            return validarCelular(celularUsuario) && validarEmail(emailNovo) ? true : false;
         }
     }
 
-    const prosseguirCadastro = async(e) => {
+    const atualizarEmail = async(e) => {
 
         //O retorno vazio encerra a thread do código
         if(!validar()) return
@@ -112,16 +109,21 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
         //Atualizando tela com loading
         setLoading(true);
 
-        //Montagem de usuário para cadastro
-       const usuario = {
-            cpfCadastro: cpfDigitado,
-            emailCadastro: email,
-        }
+        let celularUsuario = celular.replace(/\)/g, '')
+                                    .replace(/\(/g, '')
+                                    .replace(/-/g, '')
+                                    .replace(/\s/g, '')
 
         try{
+
+            //Montagem de usuário para cadastro
+            const usuarioEmailAtualizado = {
+                emailAtualizacao: emailNovo,
+                numeroAtualizacao: celularUsuario
+            }
             
-            //Realiza a solicitação do serviço de cadastro
-            const response = await cadastrarUsuario(usuario)
+            //Realiza o envio de um código para o novo email a ser cadastrado
+            const response = await atualizarEmailPorNumero(usuarioEmailAtualizado, idUsuarioRecebido)
 
             //Atualizando tela sem loading
             setLoading(false);
@@ -131,23 +133,27 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
             //e seta o email no state
             if(response.ok){
 
-                //Limpando máscara de Celular
-                let celularUsuario = celular.replace(/\)/g, '')
-                                            .replace(/\(/g, '')
-                                            .replace(/-/g, '')
-                                            .replace(/\s/g, '')
-
                 //Enviar dados para o Spring cadastrar o novo beneficiário e enviar email
                 //Pasar para próxima página coletando o email
-                navigation.navigate('CadastroConfirmacaoEmail',
+                navigation.navigate('ConfirmacaoAtualizacaoEmail',
                 {
-                    nomeDigitado: nomeDigitado,
-                    emailDigitado: email,
-                    celularDigitado: celularUsuario
+                    emailDigitado: emailNovo,
+                    cpfRecebido: cpfRecebido
                 })
 
+            }else if(response.status == 404){
+                
+                Alert.alert(
+                "Erro de Atualização :(",
+                "Por gentileza, insira um número já cadastrado em sua conta com DDD. O número inserido não foi encontrado.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+                );
             }else{
-                console.log('não vai rolar, kirido')
+                console.log(response.status)
             }
 
         }catch(erro){
@@ -207,29 +213,41 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
                 />
             </View>
 
-            <Text style={styles.texto}>Muito prazer, {nomeDigitado}! ^^</Text>
-            <Text style={styles.texto}>Se precisarmos, como podemos falar contigo?</Text>
+            <Text style={styles.texto}>Para atualizar o email, primeiro precisamos confirmar que essa conta é sua. 
+            Por gentileza, insira um celular cadastrado como abaixo e um novo email.</Text>
+            {
+            
+            celularBeneficiarioRecebido || celularCompanheiroRecebido ?
+            
+            <Text style={styles.texto_celular}>
+                {celularBeneficiarioRecebido ? celularBeneficiarioRecebido : null}
+                {celularBeneficiarioRecebido && celularCompanheiroRecebido ? ' ou ' : null}
+                {celularCompanheiroRecebido ? celularCompanheiroRecebido : null}
+            </Text>
+
+            :
+
+            null
+            
+            }
+            
             <FloatingLabelInput
-                label="Digite seu melhor email"
-                value={email ? email : ''}
-                onChangeText={(texto) => setEmail(texto)}
-                editable={loading ? false: true}
-            />
-            <FloatingLabelInput
-                label="Digite seu número de celular"
+                label="Digite um número cadastrado"
                 value={celular ? celular : ''}
                 onChangeText={(texto) => setarCelular(texto)}
                 maxLength={15}
                 keyboardType={'numeric'}
                 editable={loading ? false: true}
             />
-            <Image
-                style={styles.image}
-                source={require('../../assets/icons/contact.png')}
+            <FloatingLabelInput
+                label="Digite seu melhor email atual"
+                value={emailNovo ? emailNovo : ''}
+                onChangeText={(texto) => setEmailNovo(texto)}
+                editable={loading ? false: true}
             />
             <TouchableOpacity
                 style={styles.button}
-                onPress={prosseguirCadastro}
+                onPress={atualizarEmail}
                 disabled={loading ? true : false}
                 >
                 <Text style={styles.button_texto}>ENVIAR</Text>
@@ -258,10 +276,17 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 30
     },
+    texto_celular: {
+        color: "#005E80",
+        fontFamily: "montserrat-regular-texto",
+        fontSize: 25,
+        textAlign: 'center',
+        margin: 30
+    },
     image: {
         width: 150,
         height: 150,
-        marginTop: 20,
+        margin: 20,
         alignSelf: 'center'
     },
     button: {
@@ -281,4 +306,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default TelaCadastroDadosContato
+export default TelaAtualizarEmailEsquecimento

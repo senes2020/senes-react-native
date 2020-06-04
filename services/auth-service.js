@@ -44,6 +44,57 @@ export const autenticarCodigo = async (codigo) =>{
     return response
 }
 
+//Realiza o envio de um código para o novo email que deseja cadastrar
+export const atualizarEmailCodigo = async (objetoEmail, idUsuario) =>{
+
+    const response = await doRequest('senes/usuario/atualizar/email/', 'PUT', objetoEmail, idUsuario)
+
+    if(response.ok){
+        //const usuario = await response.json()
+        //setSession(usuario)
+    }
+
+    return response
+}
+
+export const atualizarEmailPorNumero = async (objetoEmail, idUsuario) =>{
+
+    const response = await doRequest('senes/usuario/atualizar/codigo/', 'PUT', objetoEmail, idUsuario)
+
+    if(response.ok){
+        //const usuario = await response.json()
+        //setSession(usuario)
+    }
+
+    return response
+}
+
+//Realiza o envio de um código para o novo email que deseja cadastrar
+export const atualizarEmail = async (objetoEmail, codigo) =>{
+
+    const response = await doRequest('senes/usuario/atualizar/email/codigo/', 'PUT', objetoEmail, codigo)
+
+    if(response.ok){
+        //const usuario = await response.json()
+        //setSession(usuario)
+    }
+
+    return response
+}
+
+
+export const verificarFinaisCelularesUsuario = async (codigo) =>{
+
+    const response = await doRequest('senes/usuario/celulares/', 'GET', '', codigo)
+
+    if(response.status != 500){
+        //const usuario = await response.json()
+        //setSession(usuario)
+    }
+
+    return response
+}
+
 //Verifica se o usuário está logado através da existência do Token
 export const isSignedIn = async () =>{
     const session = await AsyncStorage.getItem(SESSION_KEY)

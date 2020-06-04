@@ -34,6 +34,7 @@ const TelaAutenticacao = ({navigation}, props) =>{
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [cpf, setCpf] = useState('');
     const [email, setEmail] = useState('')
+    const [idUsuario, setIdUsuario] = useState('')
     const [loading, setLoading] = useState(false);
 
     //Função para aplicar máscara do CPF e setar no state
@@ -144,9 +145,9 @@ const TelaAutenticacao = ({navigation}, props) =>{
             //Limpando máscara do CPF
             let cpfUsuario = cpf.replace(/\./g, '').replace(/-/g, '');
 
-            if(validarCpf(cpfUsuario)){
+            //if(validarCpf(cpfUsuario)){
                 return true;
-            }
+            //}
         }
     }
 
@@ -178,14 +179,19 @@ const TelaAutenticacao = ({navigation}, props) =>{
             if(response.ok){
 
                 response.json().then((json) => {
-                
+               
                     const emailBanco = json.email;
-                    setEmail(emailBanco)
+            
+                    const idUsuarioBanco = json.id;
+                
+                    const cpfBanco = json.cpf;
                     
                     navigation.navigate(
                         'AutenticacaoCodigo',
                         {
-                            emailRecebido: emailBanco
+                            cpfRecebido: cpfBanco,
+                            emailRecebido: emailBanco,
+                            idUsuarioRecebido: idUsuarioBanco
                         })
                 })
 
