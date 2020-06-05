@@ -23,9 +23,6 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
     //Recebe o email do cliente 
     //fragmenta para exibir somente a inicial e o final, por segurança.
     const {emailRecebido, idUsuarioRecebido, cpfRecebido} =  route.params;
-    const inicialEmail = emailRecebido.substr(0, 1)
-    const finalEmail = emailRecebido.split('@')
-    const emailFinal = inicialEmail + '*****@' + finalEmail[1]
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -95,7 +92,6 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
             'AtualizarEmailAcesso',
             {
                 idUsuarioRecebido: idUsuarioRecebido,
-                emailRecebido: emailRecebido,
                 cpfRecebido: cpfRecebido
             })
     }
@@ -126,7 +122,6 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
                         'AtualizarEmailEsquecimento',
                         {
                             idUsuarioRecebido: idUsuarioRecebido,
-                            emailRecebido: emailRecebido,
                             cpfRecebido: cpfRecebido,
                             celularBeneficiarioRecebido: celularBeneficiario,
                             celularCompanheiroRecebido: celularCompanheiro
@@ -222,7 +217,7 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
             </View>
 
          <Text style={styles.texto}>
-            Enviamos um código para o seu email com final {emailFinal} cadastrado.
+            Enviamos um código para o seu email com final {emailRecebido} cadastrado.
             Confirme que você é o dono dele ^^
          </Text>
          

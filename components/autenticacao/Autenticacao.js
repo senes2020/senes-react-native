@@ -33,8 +33,6 @@ const TelaAutenticacao = ({navigation}, props) =>{
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
     const [cpf, setCpf] = useState('');
-    const [email, setEmail] = useState('')
-    const [idUsuario, setIdUsuario] = useState('')
     const [loading, setLoading] = useState(false);
 
     //Função para aplicar máscara do CPF e setar no state
@@ -127,6 +125,7 @@ const TelaAutenticacao = ({navigation}, props) =>{
         return true;
     }
 
+    //Função que aplica as validações
     const validar = () =>{
         
         if(!cpf){
@@ -145,9 +144,9 @@ const TelaAutenticacao = ({navigation}, props) =>{
             //Limpando máscara do CPF
             let cpfUsuario = cpf.replace(/\./g, '').replace(/-/g, '');
 
-            //if(validarCpf(cpfUsuario)){
+            if(validarCpf(cpfUsuario)){
                 return true;
-            //}
+            }
         }
     }
 
@@ -251,7 +250,6 @@ const TelaAutenticacao = ({navigation}, props) =>{
 
     return (
         <KeyboardAwareScrollView
-            //style={styles.container}
             resetScrollToCoords={{ x: 0, y: 0 }}
             contentContainerStyle={styles.container}
             scrollEnabled={false}

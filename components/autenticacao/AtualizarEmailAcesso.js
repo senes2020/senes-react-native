@@ -25,10 +25,7 @@ const TelaAtualizarEmailAcesso = ({route, navigation}, props) => {
     const [loading, setLoading] = useState(false);
 
     //Coleta de dados digitados em outra tela
-    const {idUsuarioRecebido, emailRecebido, cpfRecebido} =  route.params;
-
-    //Função de validação de endereço de email antigo
-    const validarEmailAntigo = (email) => email == emailRecebido ? true : false;
+    const {idUsuarioRecebido, cpfRecebido} =  route.params;
 
     //Função de validação do email
     const validarEmail = (email) => {
@@ -62,7 +59,7 @@ const TelaAtualizarEmailAcesso = ({route, navigation}, props) => {
             );
             return false
         }else{
-            if(validarEmailAntigo(emailAntigo) && validarEmail(emailNovo)){
+            if(validarEmail(emailAntigo) && validarEmail(emailNovo)){
                 return true;
             }
         }
@@ -79,6 +76,7 @@ const TelaAtualizarEmailAcesso = ({route, navigation}, props) => {
         //Montagem de usuário para cadastro
        const usuarioEmailAtualizado = {
             cpfAtualizacao: cpfRecebido,
+            emailAntigo: emailAntigo,
             emailAtualizacao: emailNovo
         }
 
@@ -103,8 +101,17 @@ const TelaAtualizarEmailAcesso = ({route, navigation}, props) => {
                     cpfRecebido: cpfRecebido
                 })
 
-            }else{
-                console.log('não vai rolar, kirido')
+            }else if(response.status == 404){
+                
+                Alert.alert(
+                "Erro de Atualização :(",
+                "Aparentemente, você se enganou e esse não é o email cadastrado. Por gentileza, digite o email anteriormente cadastrado na conta.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+                );
             }
 
         }catch(erro){
