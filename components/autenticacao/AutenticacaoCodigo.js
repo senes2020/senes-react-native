@@ -61,9 +61,17 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
                         navigation.navigate('AutenticacaoPerfil');    
                     }else{
                         if(tipoPerfilBeneficiario == '1'){
-                            navigation.navigate('HomeBeneficiario');
+                            navigation.navigate(
+                                'HomeBeneficiario',
+                                {
+                                    idUsuarioRecebido: idUsuarioRecebido
+                                })
                         }else{
-                            navigation.navigate('HomeCompanheiro');
+                            navigation.navigate(
+                                'HomeCompanheiro',
+                                {
+                                    idUsuarioRecebido: idUsuarioRecebido
+                                })
                         }
                     }
                 })

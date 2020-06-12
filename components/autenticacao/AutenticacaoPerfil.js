@@ -84,7 +84,7 @@ const TelaAutenticacaoPerfil = ({navigation}, props) =>{
             </View>
          </View> 
 
-         <TouchableOpacity
+        <TouchableOpacity
          style={styles.button_info}
         >
          <Image
