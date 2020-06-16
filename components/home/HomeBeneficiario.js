@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image} from 'react-native'
+import { StyleSheet, Text, View, Image, Linking} from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -11,6 +11,7 @@ import { AppLoading } from 'expo'
 import { coletarDadosBeneficiario } from '../../services/data-service'
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler'
 import CardStack from '../tools/CardStack'
+import CustomOverlay from '../tools/CustomOverlay'
 
 const TelaHomeBeneficiario = ({route, navigation}, props) => {
 
@@ -23,6 +24,7 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
     const [nome, setNome] = useState();
     const [nomeAbreviado, setNomeAbreviado] = useState();
     const [loading, setLoading] = useState(false);
+    const [dados, setDados] = useState('');
 
     React.useEffect(() => {
 
@@ -74,7 +76,10 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
         coletarDadosEntidade();
       }, []);
 
-    
+    //Realiza chamada telefônica para o 0800 do SENES
+    const telefonarCentral = () => {
+        Linking.openURL(`tel:11997671801`)
+    }
 
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
@@ -122,6 +127,7 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
 
             <View style={styles.container_card}>
                 <CardStack />
+                <CustomOverlay dados={dados}/>
             </View>
 
             <TouchableOpacity
@@ -135,6 +141,7 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
                 <Text style={styles.texto_ajuda}>Precisa de ajuda? Vem conversar com a gente ^^</Text>
                 <TouchableOpacity
                     style={styles.button_telefonar}
+                    onPress={telefonarCentral}
                     disabled={loading ? true : false}
                 >
                     <Text style={styles.button_telefonar_texto}>TELEFONAR</Text>

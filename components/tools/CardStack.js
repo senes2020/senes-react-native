@@ -8,61 +8,105 @@ import {
 
 import Carousel from 'react-native-snap-carousel';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import CurativosAvaliacao from './CurativosAvaliacao';
+import CustomOverlay from './CustomOverlay';
+import update from 'react-addons-update';
 
 export default class CardStack extends React.Component {
 
- 
     constructor(props){
         super(props);
         this.state = {
           activeIndex:0,
           carouselItems: [
           {
-              title:"Item 1",
-              text: "Adelaide Pereira Mello",
+              sexo:"F",
+              nome: "Adelaide Pereira Mello",
+              avaliacao: 4.5,
+              cnh: true,
+              especializacoes: ['Gerontologia', 'Técnico', 'Auxiliar', 'Home Care'],
+              valor: 52.20,
+              visibilidadeBio: false,
+              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
           },
           {
-              title:"Item 2",
-              text: "Text 2",
+              sexo:"M",
+              nome: "Marcos Pereira Silva",
+              avaliacao: 3,
+              cnh: true,
+              especializacoes: ['Gerontologia', 'Enfermeiro'],
+              valor: 50.45,
+              visibilidadeBio: false,
+              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
           },
           {
-              title:"Item 3",
-              text: "Text 3",
+              sexo:"F",
+              nome: "Rosana Pereira Mello",
+              avaliacao: 0,
+              cnh: false,
+              especializacoes: ['Gerontologia', 'Técnico'],
+              valor: 52.20,
+              visibilidadeBio: false,
+              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
           },
           {
-              title:"Item 4",
-              text: "Text 4",
+              sexo:"F",
+              nome: "Loretta Gonçalves Pedrosa",
+              avaliacao: 2,
+              cnh: true,
+              especializacoes: ['Home Care'],
+              valor: 20.50,
+              visibilidadeBio: false,
+              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
           },
           {
-              title:"Item 5",
-              text: "Text 5",
+              sexo:"M",
+              nome: "Ronaldo Fernandes Fonseca",
+              avaliacao: 1.5,
+              cnh: false,
+              especializacoes: ['Home Care'],
+              valor: 52.20,
+              visibilidadeBio: false,
+              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
           },
-        ]
+        ],
+        dados: '',
+        visibilidadeBio: false
       }
     }
 
-    _renderItem({item,index}){
+    toggleOverlay = (objeto, index) => {
+
+      //const itens = this.state.carouselItems
+
+      this.setState({
+        dados: objeto.dados,
+        visibilidadeBio: true
+      })
+      
+      //console.log(this.state.carouselItems[index])
+      console.log(this.state.dados);
+      console.log(this.state.visibilidadeBio)
+    };
+
+    _renderItem = ({item,index}) => {
+
         return (
-          <View style={{
-              backgroundColor:'red',
-              borderRadius: 5,
-              height: 400,
-              padding: 20,
-              marginLeft: 25,
-              marginRight: 25, }}>
+          <View style={styles.container_principal}>
 
             <View style={styles.container_bio}>
 
               <View style={styles.container_companheiro}>
                 <Image
                   style={styles.image_companheiro}
-                  source={require('../../assets/icons/icone-mulher.png')}
+                  source={item.sexo == 'M' ? require('../../assets/icons/icone-homem.png') 
+                                           : require('../../assets/icons/icone-mulher.png')}
                 />
-                <Text style={styles.nome_companheiro}>{item.text}</Text>
               </View>
 
               <TouchableOpacity
-              style={styles.button_info}
+                onPress={this.toggleOverlay.bind(this, item, index)}
+                style={styles.button_info}
               >
                 <Image
                     style={styles.image_info}
@@ -72,11 +116,58 @@ export default class CardStack extends React.Component {
 
             </View>
 
+            <View style={styles.container_nome}>
+              <Text style={styles.nome_companheiro}>{item.nome}</Text>
+            </View>
+
+            <View style={styles.container_avaliacao}>
+              <CurativosAvaliacao avaliacao={item.avaliacao}/>
+            </View>
+
+            <View style={styles.container_cnh}>
+              {item.cnh == true ?
+              <View style={styles.cnh_resposta}>
+                <Image
+                  style={styles.image_avaliacao}
+                  source={require('../../assets/icons/volante.png')}
+                /> 
+                <Text style={styles.texto_cnh}>POSSUI CNH</Text>
+              </View>
+              :
+              <View style={styles.cnh_resposta}>
+                <Image
+                  style={styles.image_avaliacao}
+                  source={require('../../assets/icons/volante_desbotado.png')}
+                />
+                <Text style={styles.texto_cnh}>NÃO POSSUI CNH</Text>
+              </View>
+              }
+            </View>           
+
+            <View style={styles.container_especializacao}>
+                {item.especializacoes.map(function(name, index){
+                  if(name == 'Técnico' || name == 'Auxiliar' || name == 'Enfermeiro'){
+                    return  <View key={ index } style={styles.item_especializacao_formacao}>
+                              <Text style={styles.texto_especializacao}>{name}</Text>
+                            </View>  
+                  }else{
+                    return  <View key={ index } style={styles.item_especializacao_complemento}>
+                              <Text style={styles.texto_especializacao}>{name}</Text>
+                            </View>
+                  } 
+                  
+                })}
+            </View>
+
+            <View style={styles.container_valor}>
+              <Text style={styles.valor}>R$ {item.valor} /hora</Text>
+            </View>
+
           </View>
 
         )
     }
-
+//<CustomOverlay dados={this.state.dados}/>
     render() {
         return (
           <SafeAreaView style={{flex: 1  }}>
@@ -97,28 +188,85 @@ export default class CardStack extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  container_principal: {
+    backgroundColor: 'white',
+    borderColor: '#005E80',
+    borderWidth: 2,
+    borderRadius: 5,
+    height: 400,
+    padding: 20,
+    marginLeft: 25,
+    marginRight: 25,
+    justifyContent: 'space-between'
+  },
   container_bio: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    height: 150,
-    backgroundColor: 'yellow'
   },
   container_companheiro: {
     flexDirection: 'column',
     justifyContent: 'center',
-    backgroundColor: 'green'
+  },
+  container_avaliacao: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  container_cnh: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
+  },
+  container_especializacao: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap'
+  },
+  cnh_resposta:{
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  item_especializacao_formacao: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'green',
+    borderRadius: 20,
+    padding: 5,
+    marginRight: 5,
+    marginBottom: 10
+  },
+  item_especializacao_complemento: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'orange',
+    borderRadius: 20,
+    padding: 5,
+    marginRight: 5,
+    marginBottom: 10
+  },
+  valor:{
+    color: "#008a12",
+    fontFamily: "montserrat-regular-texto",
+    fontSize: 20,
+    textAlign: 'center'
   },
   nome_companheiro: {
+    color: "#005E80",
+    fontFamily: "montserrat-regular-texto",
+    fontSize: 15,
+    textAlign: 'center'
+  },
+  texto_especializacao: {
+    color: "white",
+    fontFamily: "montserrat-regular-texto",
+    fontSize: 12
+  },
+  texto_cnh:{
     color: "black",
     fontFamily: "montserrat-regular-texto",
-    fontSize: 12,
-    textAlign: 'center'
+    fontSize: 15,
+    marginLeft: 10
   },
   button_info: {
       alignSelf: "flex-end",
       height: 60,
       width: 50,
-      marginTop: 10,
       marginRight: 10,
       borderColor: "transparent",
       borderWidth: 2,
@@ -126,13 +274,18 @@ const styles = StyleSheet.create({
       justifyContent: "center"
   },
   image_info: {
-      width: 50,
+      width: 40,
       resizeMode: "contain",
-      alignSelf: "center"
+      alignSelf: "flex-end"
+  },
+  image_avaliacao: {
+    height: 30,
+    width: 30,
   },
   image_companheiro: {
-      width: 100,
-      resizeMode: "contain",
-      alignSelf: "center"
+      width: 130,
+      height: 130,
+      alignSelf: "center",
+      marginRight: -10
   }
 })
