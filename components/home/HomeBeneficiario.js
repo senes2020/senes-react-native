@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, Linking} from 'react-native'
+import { StyleSheet, Text, View, Image, Linking, Alert} from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -24,7 +24,9 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
     const [nome, setNome] = useState();
     const [nomeAbreviado, setNomeAbreviado] = useState();
     const [loading, setLoading] = useState(false);
-    const [dados, setDados] = useState('');
+    const [dadosOverlay, setDadosOverlay] = useState('teste');
+    const [visibilidadeOverlay, setVisibilidadeOverlay] = useState(false);
+    const [profissionalExibido, setProfissionalExibido] = useState(0);
 
     React.useEffect(() => {
 
@@ -81,6 +83,27 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
         Linking.openURL(`tel:11997671801`)
     }
 
+    //Função chamada para agendamentos
+    const exibirProfissional = () => {
+        Alert.alert('O profissional escolhido tem o número: ' + profissionalExibido)
+    }
+
+    //Função que atualiza dados do profissional exibido
+    const atualizarProfissionalAtual = (codigo) => {
+        setProfissionalExibido(codigo)
+    }
+
+    //Função de atualização de dados e visibilidade do Overlay
+    const atualizarOverlay = (visibilidade, dados) => {
+        setDadosOverlay(dados)
+        setVisibilidadeOverlay(visibilidade)
+    }
+
+    //Atualização do Overlay para que seja fechado
+    const atualizarVisibilidade = () => {
+        setVisibilidadeOverlay(!visibilidadeOverlay)
+    }
+
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
         return (
@@ -126,13 +149,17 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
             <Text style={styles.texto}>Seja bem-vindo, {nomeAbreviado} ^^</Text>
 
             <View style={styles.container_card}>
-                <CardStack />
-                <CustomOverlay dados={dados}/>
+                <CardStack 
+                    chamandoTeste={(texto) => funcaoTeste(texto)} 
+                    profissional={(codigo) => atualizarProfissionalAtual(codigo)}
+                    overlay={(visibilidade, dados) => atualizarOverlay(visibilidade, dados)}
+                />
             </View>
 
             <TouchableOpacity
                 style={styles.button}
                 disabled={loading ? true : false}
+                onPress={exibirProfissional}
             >
                 <Text style={styles.button_texto}>AGENDAR</Text>
             </TouchableOpacity>
@@ -147,6 +174,16 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
                     <Text style={styles.button_telefonar_texto}>TELEFONAR</Text>
                 </TouchableOpacity>
             </View>
+            
+            
+                {visibilidadeOverlay ?
+                   
+                         
+                    <CustomOverlay visibilidade={atualizarVisibilidade} dados={dadosOverlay}/>
+                    
+                :   
+                    <Text>''</Text>
+                }
 
         </ScrollView>   
       )
@@ -160,6 +197,7 @@ const styles = StyleSheet.create({
     },
     container_card: {
         height: 400,
+        alignSelf: 'center',
         marginRight: 20,
         marginLeft: 20
     },

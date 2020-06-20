@@ -10,9 +10,10 @@ import Carousel from 'react-native-snap-carousel';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import CurativosAvaliacao from './CurativosAvaliacao';
 import CustomOverlay from './CustomOverlay';
-import update from 'react-addons-update';
+import { Overlay } from 'react-native-elements';
 
 export default class CardStack extends React.Component {
+
 
     constructor(props){
         super(props);
@@ -26,8 +27,7 @@ export default class CardStack extends React.Component {
               cnh: true,
               especializacoes: ['Gerontologia', 'Técnico', 'Auxiliar', 'Home Care'],
               valor: 52.20,
-              visibilidadeBio: false,
-              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
+              dados: 'Olá, tudo bem? Meu nome é Adelaide.'
           },
           {
               sexo:"M",
@@ -36,8 +36,7 @@ export default class CardStack extends React.Component {
               cnh: true,
               especializacoes: ['Gerontologia', 'Enfermeiro'],
               valor: 50.45,
-              visibilidadeBio: false,
-              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
+              dados: 'Olá, tudo bem? Meu nome é Marcos.'
           },
           {
               sexo:"F",
@@ -46,8 +45,7 @@ export default class CardStack extends React.Component {
               cnh: false,
               especializacoes: ['Gerontologia', 'Técnico'],
               valor: 52.20,
-              visibilidadeBio: false,
-              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
+              dados: 'Olá, tudo bem? Meu nome é Rosana.'
           },
           {
               sexo:"F",
@@ -56,8 +54,7 @@ export default class CardStack extends React.Component {
               cnh: true,
               especializacoes: ['Home Care'],
               valor: 20.50,
-              visibilidadeBio: false,
-              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
+              dados: 'Olá, tudo bem? Meu nome é Loretta.'
           },
           {
               sexo:"M",
@@ -66,28 +63,32 @@ export default class CardStack extends React.Component {
               cnh: false,
               especializacoes: ['Home Care'],
               valor: 52.20,
-              visibilidadeBio: false,
-              dados: 'Olá, tudo bem? Sou Auxiliar de Enfermagem formada no Instituto de Enfermagem Brasileiro.'
+              dados: 'Olá, tudo bem? Meu nome é Ronaldo.'
           },
         ],
-        dados: '',
+        dados: 'Teste de dados',
         visibilidadeBio: false
       }
     }
 
+    //Função que atualiza dados do Overlay na tela principal
+    //Enviando os dados necessários e a visibilidade
+    //A função overlay é recebida pelo componente
     toggleOverlay = (objeto, index) => {
 
-      //const itens = this.state.carouselItems
+      let dados = this.state.carouselItems[index].dados;
+      let visibilidadeBio = true;
 
-      this.setState({
-        dados: objeto.dados,
-        visibilidadeBio: true
-      })
-      
-      //console.log(this.state.carouselItems[index])
-      console.log(this.state.dados);
-      console.log(this.state.visibilidadeBio)
+      this.props.overlay(visibilidadeBio, dados);
     };
+
+    //Função que atualiza o state com a posição do profissional exibido
+    //e envia a mesma para o componente pai
+    //obtem a função profissional pelo props
+    atualizaIndex = (index) => {
+      this.setState({activeIndex:index})
+      this.props.profissional(index)
+    }
 
     _renderItem = ({item,index}) => {
 
@@ -167,10 +168,10 @@ export default class CardStack extends React.Component {
 
         )
     }
-//<CustomOverlay dados={this.state.dados}/>
+
     render() {
         return (
-          <SafeAreaView style={{flex: 1  }}>
+          <SafeAreaView style={{flex: 1  }} teste={this.funcaoTeste}>
             <View style={{ flex: 1, flexDirection:'row', justifyContent: 'center', }}>
                 <Carousel
                   layout={"stack"}
@@ -180,7 +181,8 @@ export default class CardStack extends React.Component {
                   sliderWidth={300}
                   itemWidth={320}
                   renderItem={this._renderItem}
-                  onSnapToItem = { index => this.setState({activeIndex:index}) } />
+                  onSnapToItem = { index => this.atualizaIndex(index) }
+                  />
             </View>
           </SafeAreaView>
         );
@@ -289,3 +291,4 @@ const styles = StyleSheet.create({
       marginRight: -10
   }
 })
+

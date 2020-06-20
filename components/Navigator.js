@@ -3,6 +3,7 @@ import 'react-native-gesture-handler'
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native';
+import { NavigationActions, addNavigationHelpers } from 'react-navigation'
 
 //Componentes
 import Autenticacao from './autenticacao/Autenticacao';
@@ -22,6 +23,9 @@ import TelaConfirmacaoCodigoNovoEmail from './autenticacao/ConfirmacaoAtualizaca
 import TelaAtualizarEmailEsquecimento from './autenticacao/AtualizarEmailEsquecimento';
 
 const Stack = createStackNavigator();
+
+//const initialAction = { type: NavigationActions.Init }
+//const initialState = Stack.router.getStateForAction(initialAction)
 
 export default function MyStack(){
     return(
@@ -81,6 +85,7 @@ export default function MyStack(){
                     name="HomeBeneficiario"
                     component={TelaHomeBeneficiario}
                     options={{headerShown: false}}
+                    
                 />
                 <Stack.Screen
                     name="HomeCompanheiro"
@@ -106,3 +111,10 @@ export default function MyStack(){
         </NavigationContainer>
     )
 }
+
+/*
+export default (state = initialState, action) => {
+    // Our Navigator's router is now responsible for 
+    // creating our navigation state object
+    return Navigator.router.getStateForAction(action, state)
+  }*/

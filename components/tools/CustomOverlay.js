@@ -1,24 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Overlay } from 'react-native-elements';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 const CustomOverlay = (props) => {
-  const [visible, setVisible] = false;
-  const [dados, setDados] = props.dados;
 
+  let {dados, visibilidade} = props;
+
+  //Função que chama método da função pai para não tornar visível o Overlay 
+  //quando houver toque no fundo da tela
   const toggleOverlay = () => {
-    setVisible(!visible);
+    visibilidade();
   };
-
-  //<Button title="Open Overlay" onPress={toggleOverlay} />
 
   return (
     <View>
-      <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-        <Text>{dados}</Text>
+      <Overlay onBackdropPress={toggleOverlay}>
+        <Text style={styles.texto_bio}>{dados}</Text>
       </Overlay>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  texto_bio: {
+    padding: 20
+  }
+})
 
 export default CustomOverlay
