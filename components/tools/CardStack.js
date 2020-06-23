@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   Text, 
   View,
@@ -9,88 +9,123 @@ import {
 import Carousel from 'react-native-snap-carousel';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import CurativosAvaliacao from './CurativosAvaliacao';
-import CustomOverlay from './CustomOverlay';
-import { Overlay } from 'react-native-elements';
+import { coletarProfissionais } from '../../services/data-service'
 
-export default class CardStack extends React.Component {
+const CardStack = (props) => {
 
+    //Interações com state
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [carouselItems, setCarouselItems] = useState(
+                        [{
+                          nome: '',
+                          sexo: '',
+                          avaliacao: 0,
+                          cnh: false,
+                          especializacoes: [],
+                          valor: 0,
+                          dados: ''
+                        }]
+    );
+    const [loading, setLoading] = useState(false);
 
-    constructor(props){
-        super(props);
-        this.state = {
-          activeIndex:0,
-          carouselItems: [
-          {
-              sexo:"F",
-              nome: "Adelaide Pereira Mello",
-              avaliacao: 4.5,
-              cnh: true,
-              especializacoes: ['Gerontologia', 'Técnico', 'Auxiliar', 'Home Care'],
-              valor: 52.20,
-              dados: 'Olá, tudo bem? Meu nome é Adelaide.'
-          },
-          {
-              sexo:"M",
-              nome: "Marcos Pereira Silva",
-              avaliacao: 3,
-              cnh: true,
-              especializacoes: ['Gerontologia', 'Enfermeiro'],
-              valor: 50.45,
-              dados: 'Olá, tudo bem? Meu nome é Marcos.'
-          },
-          {
-              sexo:"F",
-              nome: "Rosana Pereira Mello",
-              avaliacao: 0,
-              cnh: false,
-              especializacoes: ['Gerontologia', 'Técnico'],
-              valor: 52.20,
-              dados: 'Olá, tudo bem? Meu nome é Rosana.'
-          },
-          {
-              sexo:"F",
-              nome: "Loretta Gonçalves Pedrosa",
-              avaliacao: 2,
-              cnh: true,
-              especializacoes: ['Home Care'],
-              valor: 20.50,
-              dados: 'Olá, tudo bem? Meu nome é Loretta.'
-          },
-          {
-              sexo:"M",
-              nome: "Ronaldo Fernandes Fonseca",
-              avaliacao: 1.5,
-              cnh: false,
-              especializacoes: ['Home Care'],
-              valor: 52.20,
-              dados: 'Olá, tudo bem? Meu nome é Ronaldo.'
-          },
-        ],
-        dados: 'Teste de dados',
-        visibilidadeBio: false
+    //Obtendo profissionais registrados
+    React.useEffect(() => {
+
+      //Atualizando tela com loading
+      setLoading(true);
+
+      async function coletarDadosEntidade() {
+        
+          try{
+          
+              const response = await coletarProfissionais()
+  
+              //Atualizando tela sem loading
+              setLoading(false);
+
+              let arrayProfissionais = []
+  
+              //Se a resposta voltar com status 200 OK, 
+              //prossegue, senão dá mensagem
+              if(response.ok){
+                  
+                  response.json().then((json) => {
+
+                      json.map((profissional) => {
+                        
+                        //Aqui consegue pegar dados de cada profissional
+                        //falta montar os objetos, enviar pros itens do carrossel
+                        //e por fim demonstra-los em tela
+                        let especializacoes = []
+                        
+                        profissional.especializacoes.map((especializacao) => {
+                          especializacoes.push(especializacao.nome_especializacao)  
+                        })
+
+                        let companheiro = {
+                          nome: profissional.nome,
+                          sexo: profissional.sexo,
+                          avaliacao: profissional.avaliacao,
+                          cnh: profissional.carteira_motorista == 'S' ? true : false,
+                          especializacoes: especializacoes,
+                          valor: profissional.valor_hora,
+                          dados: profissional.dados_bio
+                        }
+                        
+                        //Reunindo profissionais retornados em array
+                        arrayProfissionais.push(companheiro)
+
+                      })
+
+                      //Atualizando state com array de profissionais retornado
+                      setCarouselItems(arrayProfissionais)
+                  
+                  })
+                 
+              }else if(response.status == 404){
+                  
+                  Alert.alert(
+                  "Erro de Obtenção de dados :(",
+                  "Ooops, sorry, erro nosso! Consulte os desenvolvedores sobre a passagem de ID de usuário para a tela Home.",
+                  [
+                      
+                      { text: "OK"}
+                  ],
+                  { cancelable: false }
+                  );
+              }
+  
+          }catch(erro){
+              console.log('entrei no catch')
+              console.log(erro)
+          }
+
       }
-    }
+  
+      coletarDadosEntidade();
+    }, []);
 
     //Função que atualiza dados do Overlay na tela principal
     //Enviando os dados necessários e a visibilidade
     //A função overlay é recebida pelo componente
-    toggleOverlay = (objeto, index) => {
+    const toggleOverlay = (objeto, index) => {
 
-      let dados = this.state.carouselItems[index].dados;
+      let dados = objeto.dados;
       let visibilidadeBio = true;
 
-      this.props.overlay(visibilidadeBio, dados);
+      props.overlay(visibilidadeBio, dados);
+      
     };
 
     //Função que atualiza o state com a posição do profissional exibido
     //e envia a mesma para o componente pai
     //obtem a função profissional pelo props
-    atualizaIndex = (index) => {
-      this.setState({activeIndex:index})
-      this.props.profissional(index)
+    const atualizaIndex = (index) => {
+      setActiveIndex(index);
+      props.profissional(index);
     }
 
-    _renderItem = ({item,index}) => {
+    const _renderItem = ({item,index}) => {
 
         return (
           <View style={styles.container_principal}>
@@ -106,7 +141,7 @@ export default class CardStack extends React.Component {
               </View>
 
               <TouchableOpacity
-                onPress={this.toggleOverlay.bind(this, item, index)}
+                onPress={toggleOverlay.bind(this, item, index)}
                 style={styles.button_info}
               >
                 <Image
@@ -146,7 +181,7 @@ export default class CardStack extends React.Component {
             </View>           
 
             <View style={styles.container_especializacao}>
-                {item.especializacoes.map(function(name, index){
+                {item.especializacoes.map((name, index) => {
                   if(name == 'Técnico' || name == 'Auxiliar' || name == 'Enfermeiro'){
                     return  <View key={ index } style={styles.item_especializacao_formacao}>
                               <Text style={styles.texto_especializacao}>{name}</Text>
@@ -169,24 +204,23 @@ export default class CardStack extends React.Component {
         )
     }
 
-    render() {
-        return (
-          <SafeAreaView style={{flex: 1  }} teste={this.funcaoTeste}>
-            <View style={{ flex: 1, flexDirection:'row', justifyContent: 'center', }}>
-                <Carousel
-                  layout={"stack"}
-                  layoutCardOffset={`18`}
-                  ref={ref => this.carousel = ref}
-                  data={this.state.carouselItems}
-                  sliderWidth={300}
-                  itemWidth={320}
-                  renderItem={this._renderItem}
-                  onSnapToItem = { index => this.atualizaIndex(index) }
-                  />
-            </View>
-          </SafeAreaView>
-        );
-    }
+    return (
+      <SafeAreaView style={{flex: 1  }}>
+        <View style={{ flex: 1, flexDirection:'row', justifyContent: 'center', }}>
+            <Carousel
+              layout={"stack"}
+              layoutCardOffset={`18`}
+              //ref={ref => carouselItems = ref}
+              data={carouselItems}
+              sliderWidth={300}
+              itemWidth={320}
+              renderItem={(item, index) => _renderItem(item, index)}
+              onSnapToItem = { index => atualizaIndex(index) }
+              />
+        </View>
+      </SafeAreaView>
+    );
+    
 }
 
 const styles = StyleSheet.create({
@@ -195,7 +229,7 @@ const styles = StyleSheet.create({
     borderColor: '#005E80',
     borderWidth: 2,
     borderRadius: 5,
-    height: 400,
+    minHeight: 400,
     padding: 20,
     marginLeft: 25,
     marginRight: 25,
@@ -211,16 +245,19 @@ const styles = StyleSheet.create({
   },
   container_avaliacao: {
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    marginTop: 10
   },
   container_cnh: {
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    marginTop: 10
   },
   container_especializacao: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    marginTop: 10
   },
   cnh_resposta:{
     flexDirection: 'row',
@@ -291,4 +328,6 @@ const styles = StyleSheet.create({
       marginRight: -10
   }
 })
+
+export default CardStack
 

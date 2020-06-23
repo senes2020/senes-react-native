@@ -150,7 +150,6 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
 
             <View style={styles.container_card}>
                 <CardStack 
-                    chamandoTeste={(texto) => funcaoTeste(texto)} 
                     profissional={(codigo) => atualizarProfissionalAtual(codigo)}
                     overlay={(visibilidade, dados) => atualizarOverlay(visibilidade, dados)}
                 />
@@ -177,9 +176,8 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
             
             
                 {visibilidadeOverlay ?
-                   
-                         
-                    <CustomOverlay visibilidade={atualizarVisibilidade} dados={dadosOverlay}/>
+                     
+                   <CustomOverlay visibilidade={atualizarVisibilidade} dados={dadosOverlay}/>
                     
                 :   
                     <Text>''</Text>
@@ -196,7 +194,7 @@ const styles = StyleSheet.create({
         flexDirection: "column"
     },
     container_card: {
-        height: 400,
+        height: 420,
         alignSelf: 'center',
         marginRight: 20,
         marginLeft: 20

@@ -21,6 +21,7 @@ import TelaHomeCompanheiro from './home/HomeCompanheiro';
 import TelaAtualizarEmailAcesso from './autenticacao/AtualizarEmailAcesso';
 import TelaConfirmacaoCodigoNovoEmail from './autenticacao/ConfirmacaoAtualizacaoEmail';
 import TelaAtualizarEmailEsquecimento from './autenticacao/AtualizarEmailEsquecimento';
+import SplashScreen from './splash/SplashScreen';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,11 @@ export default function MyStack(){
     return(
         <NavigationContainer>
             <Stack.Navigator>
+                <Stack.Screen
+                    name="Splash"
+                    component={SplashScreen}
+                    options={{headerShown: false}}
+                />
                 <Stack.Screen
                     name="Index"
                     component={Index}
