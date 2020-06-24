@@ -143,7 +143,8 @@ const TelaCadastroDadosContato = ({route, navigation}, props) => {
                 {
                     nomeDigitado: nomeDigitado,
                     emailDigitado: email,
-                    celularDigitado: celularUsuario
+                    celularDigitado: celularUsuario,
+                    cpfDigitado: cpfDigitado
                 })
 
             }else{

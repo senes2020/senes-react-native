@@ -58,7 +58,11 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
                     const tipoPerfilCompanheiro = json.flgCompanheiro;
                     
                     if(tipoPerfilBeneficiario == '1' && tipoPerfilCompanheiro == '1'){
-                        navigation.navigate('AutenticacaoPerfil');    
+                        navigation.navigate(
+                            'AutenticacaoPerfil',
+                            {
+                                idUsuarioRecebido: idUsuarioRecebido
+                            })  
                     }else{
                         if(tipoPerfilBeneficiario == '1'){
                             navigation.navigate(

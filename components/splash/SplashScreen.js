@@ -74,7 +74,7 @@ export default ({navigation}) => {
             <FadeInView duration={10000}>
                 <Image
                     style={styles.slogan}
-                    source={require('../../assets/logo/logo_slogan.png')}
+                    source={require('../../assets/icons/heart_white.png')}
                 />
             </FadeInView>
         </View>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         resizeMode: "contain"
     },
     slogan: {
-        height: 60,
+        height: 70,
         resizeMode: "contain"
     }
 })

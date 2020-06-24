@@ -9,18 +9,27 @@ import { AppLoading } from 'expo';
 import * as Font from 'expo-font'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-const TelaAutenticacaoPerfil = ({navigation}, props) =>{
+const TelaAutenticacaoPerfil = ({route, navigation}, props) =>{
 
     //Interações com state
+    const {idUsuarioRecebido} = route.params;
     const [isLoadingComplete, setLoadingComplete] = useState(false);
 
     //Funções de direcionamento
     const direcionarBeneficiario = () => {
-        navigation.navigate('HomeBeneficiario');
+        navigation.navigate(
+            'HomeBeneficiario',
+            {
+                idUsuarioRecebido: idUsuarioRecebido
+            })
     }
 
     const direcionarCompanheiro = () => {
-        navigation.navigate('HomeCompanheiro');
+        navigation.navigate(
+            'HomeCompanheiro',
+            {
+                idUsuarioRecebido: idUsuarioRecebido
+            })
     }
 
     //Código para carregamento das fontes antes da renderização

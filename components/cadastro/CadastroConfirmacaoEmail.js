@@ -25,7 +25,7 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
     const [loading, setLoading] = useState(false);
 
     //Coleta de dados de outras telas para passagem de parâmetros
-    const {emailDigitado, nomeDigitado, celularDigitado} =  route.params;
+    const {emailDigitado, nomeDigitado, celularDigitado, cpfDigitado} =  route.params;
 
     //Tratamento de prévia do email para exibição
     const inicialEmail = emailDigitado.substr(0, 1)
@@ -45,7 +45,8 @@ const TelaCadastroConfirmacaoSms = ({route, navigation}, props) => {
                 nome: nomeDigitado,
                 email: emailDigitado,
                 celular: celularDigitado,
-                codigo: codigo
+                codigo: codigo,
+                cpf: cpfDigitado
             }
 
             const response = await cadastrarBeneficiario(beneficiario)

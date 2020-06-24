@@ -104,6 +104,10 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
         setVisibilidadeOverlay(!visibilidadeOverlay)
     }
 
+    const retornarMenu = () => {
+        navigation.navigate('Index')
+    }
+
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
         return (
@@ -137,14 +141,22 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
     return (
         <ScrollView style={styles.container}>
 
-            <TouchableOpacity
-            style={styles.button_info}
-            >
-                <Image
-                    style={styles.image_info}
-                    source={require('../../assets/icons/ajuda_azul.png')}
-                />
-            </TouchableOpacity>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <TouchableOpacity
+                    style={{paddingLeft: 20, marginTop: 50}}
+                    onPress={retornarMenu}
+                >
+                    <Text style={{ color:'#005E80' }}>SAIR</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                style={styles.button_info}
+                >
+                    <Image
+                        style={styles.image_info}
+                        source={require('../../assets/icons/ajuda_azul.png')}
+                    />
+                </TouchableOpacity>
+            </View>
 
             <Text style={styles.texto}>Seja bem-vindo, {nomeAbreviado} ^^</Text>
 
