@@ -22,6 +22,8 @@ import TelaAtualizarEmailAcesso from './autenticacao/AtualizarEmailAcesso';
 import TelaConfirmacaoCodigoNovoEmail from './autenticacao/ConfirmacaoAtualizacaoEmail';
 import TelaAtualizarEmailEsquecimento from './autenticacao/AtualizarEmailEsquecimento';
 import SplashScreen from './splash/SplashScreen';
+import Proposta from './tools/DatePicker';
+
 
 const Stack = createStackNavigator();
 

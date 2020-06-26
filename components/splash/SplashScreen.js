@@ -1,86 +1,81 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { StyleSheet, Animated, Text, View, Image } from 'react-native';
+import React, { useEffect, useRef } from "react";
+import { StyleSheet, Animated, Text, View, Image } from "react-native";
 
-const FadeInView = (props) => {
-    const fadeAnim = useRef(new Animated.Value(0)).current
-
-  React.useEffect(() => {   
-    Animated.timing(
-      fadeAnim,
-      {
+export default function SplashScreen({navigation}) {
+  const animS = useRef(new Animated.Value(0)).current;
+  const animE = useRef(new Animated.Value(0)).current;
+  const animN = useRef(new Animated.Value(0)).current;
+  const animHeart = useRef(new Animated.Value(0)).current;
+  
+  useEffect(() => {
+    Animated.sequence([ 
+      Animated.timing(animS, {
         toValue: 1,
-        duration: props.duration,
-      }
-    ).start();
-  }, [])
-
-  return (
-    <Animated.View                 // Special animatable View
-      style={{
-        ...props.style,
-        opacity: fadeAnim,         // Bind opacity to animated value
-      }}
-    >
-      {props.children}
-    </Animated.View>
-  );
-}
-
-// You can then use your `FadeInView` in place of a `View` in your components:
-export default ({navigation}) => {
-
-    React.useEffect(() => {
-        setTimeout(() => {
-            navigation.navigate('Index')
-        }, 10000)
-    })
+        duration: 2000,
+      }),
+      Animated.timing(animE, {
+        toValue: 1,
+        duration: 2000,
+      }),
+      Animated.timing(animN, {
+        toValue: 1,
+        duration: 2000,
+      }),
+      Animated.timing(animHeart, {
+        toValue: 1,
+        duration: 3000,
+      })
+    ]).start();
+  }, setTimeout(() => {
+    navigation.navigate('Index')
+}, 10000));
 
   return (
     <View style={{flex: 1, backgroundColor: '#005E80', justifyContent: 'center'}}>
         <View style={{alignItems: 'center', justifyContent: 'space-between',flexDirection: 'row', marginLeft: 20, marginRight: 20}}>
-            <FadeInView duration={5000}>
+            <Animated.View style={{opacity: animS}}>
                     <Image
                         style={styles.letra_logo}
                         source={require('../../assets/logo/logo_s.png')}
                     />
-            </FadeInView>
-            <FadeInView duration={8000}>
+            </Animated.View>
+            <Animated.View style={{opacity: animE}}>
                     <Image
                         style={styles.letra_logo}
                         source={require('../../assets/logo/logo_e.png')}
                     />
-            </FadeInView>
-            <FadeInView duration={9000}>
+            </Animated.View>
+            <Animated.View style={{opacity: animN}}>
                     <Image
                         style={styles.letra_logo}
                         source={require('../../assets/logo/logo_n.png')}
                     />
-            </FadeInView>
-            <FadeInView duration={8000}>
+            </Animated.View>
+            <Animated.View style={{opacity: animE}}>
                     <Image
                         style={styles.letra_logo}
                         source={require('../../assets/logo/logo_e2.png')}
                     />
-            </FadeInView>
-            <FadeInView duration={5000}>
+            </Animated.View>
+            <Animated.View style={{opacity: animS}}>
                     <Image
                         style={styles.letra_logo}
                         source={require('../../assets/logo/logo_s2.png')}
                     />
-            </FadeInView>
+            </Animated.View>
         </View>
         
         <View style={{alignItems: 'center', justifyContent: 'center', paddingTop: 50}}>
-            <FadeInView duration={10000}>
+            <Animated.View style={{opacity: animHeart}}>
                 <Image
                     style={styles.slogan}
                     source={require('../../assets/icons/heart_white.png')}
                 />
-            </FadeInView>
+            </Animated.View>
         </View>
 
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -93,3 +88,9 @@ const styles = StyleSheet.create({
         resizeMode: "contain"
     }
 })
+    
+    
+  
+  
+
+

@@ -12,6 +12,7 @@ import { coletarDadosBeneficiario } from '../../services/data-service'
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler'
 import CardStack from '../tools/CardStack'
 import CustomOverlay from '../tools/CustomOverlay'
+import { LinearGradient } from 'expo-linear-gradient';
 
 const TelaHomeBeneficiario = ({route, navigation}, props) => {
 
@@ -141,59 +142,65 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
     return (
         <ScrollView style={styles.container}>
 
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <TouchableOpacity
-                    style={{paddingLeft: 20, marginTop: 50}}
-                    onPress={retornarMenu}
-                >
-                    <Text style={{ color:'#005E80' }}>SAIR</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                style={styles.button_info}
-                >
-                    <Image
-                        style={styles.image_info}
-                        source={require('../../assets/icons/ajuda_azul.png')}
-                    />
-                </TouchableOpacity>
-            </View>
-
-            <Text style={styles.texto}>Seja bem-vindo, {nomeAbreviado} ^^</Text>
-
-            <View style={styles.container_card}>
-                <CardStack 
-                    profissional={(codigo) => atualizarProfissionalAtual(codigo)}
-                    overlay={(visibilidade, dados) => atualizarOverlay(visibilidade, dados)}
-                />
-            </View>
-
-            <TouchableOpacity
-                style={styles.button}
-                disabled={loading ? true : false}
-                onPress={exibirProfissional}
+            <LinearGradient
+                colors={['transparent', '#005E80']}
+                
             >
-                <Text style={styles.button_texto}>AGENDAR</Text>
-            </TouchableOpacity>
 
-            <View style={styles.container_ajuda}>
-                <Text style={styles.texto_ajuda}>Precisa de ajuda? Vem conversar com a gente ^^</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <TouchableOpacity
+                        style={{paddingLeft: 20, marginTop: 50}}
+                        onPress={retornarMenu}
+                    >
+                        <Text style={{ color:'#005E80' }}>SAIR</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                    style={styles.button_info}
+                    >
+                        <Image
+                            style={styles.image_info}
+                            source={require('../../assets/icons/ajuda_azul.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+
+                <Text style={styles.texto}>Seja bem-vindo, {nomeAbreviado} ^^</Text>
+
+                <View style={styles.container_card}>
+                    <CardStack 
+                        profissional={(codigo) => atualizarProfissionalAtual(codigo)}
+                        overlay={(visibilidade, dados) => atualizarOverlay(visibilidade, dados)}
+                    />
+                </View>
+
                 <TouchableOpacity
-                    style={styles.button_telefonar}
-                    onPress={telefonarCentral}
+                    style={styles.button}
                     disabled={loading ? true : false}
+                    onPress={exibirProfissional}
                 >
-                    <Text style={styles.button_telefonar_texto}>TELEFONAR</Text>
+                    <Text style={styles.button_texto}>AGENDAR</Text>
                 </TouchableOpacity>
-            </View>
-            
-            
-                {visibilidadeOverlay ?
-                     
-                   <CustomOverlay visibilidade={atualizarVisibilidade} dados={dadosOverlay}/>
-                    
-                :   
-                    <Text>''</Text>
-                }
+
+                <View style={styles.container_ajuda}>
+                    <Text style={styles.texto_ajuda}>Precisa de ajuda? Vem conversar com a gente ^^</Text>
+                    <TouchableOpacity
+                        style={styles.button_telefonar}
+                        onPress={telefonarCentral}
+                        disabled={loading ? true : false}
+                    >
+                        <Text style={styles.button_telefonar_texto}>TELEFONAR</Text>
+                    </TouchableOpacity>
+                </View>
+                
+                
+                    {visibilidadeOverlay ?
+                        
+                    <CustomOverlay visibilidade={atualizarVisibilidade} dados={dadosOverlay}/>
+                        
+                    :   
+                        <Text></Text>
+                    }
+            </LinearGradient>
 
         </ScrollView>   
       )
@@ -243,7 +250,7 @@ const styles = StyleSheet.create({
     button: {
         height: 50,
         margin: 40,
-        borderColor: "#005E80",
+        borderColor: "white",
         borderWidth: 2,
         borderRadius: 20
     },
@@ -270,7 +277,7 @@ const styles = StyleSheet.create({
     },
     button_texto:{
         fontFamily: "montserrat-regular-texto",
-        color: "#005E80",
+        color: "white",
         textAlign: "center",
         fontSize: 20,
         marginTop: 10
