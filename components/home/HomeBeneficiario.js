@@ -1,6 +1,6 @@
 //Recursos do React/React Native
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, Linking, Alert} from 'react-native'
+import { StyleSheet, Text, View, Image, Linking, Alert, ActivityIndicator} from 'react-native'
 
 //Importando componente de fontes
 import * as Font from 'expo-font'
@@ -14,10 +14,16 @@ import CardStack from '../tools/CardStack'
 import CustomOverlay from '../tools/CustomOverlay'
 import { LinearGradient } from 'expo-linear-gradient';
 
-const TelaHomeBeneficiario = ({route, navigation}, props) => {
+//Importantando classes para o drawer
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
+import TelaHomeCompanheiro from './HomeCompanheiro'
+import { NavigationContainer} from '@react-navigation/native'
+import { NavigationActions, StackActions } from 'react-navigation'
+import { Icon } from 'react-native-elements'
 
-    //Recebe o email do cliente 
-    //fragmenta para exibir somente a inicial e o final, por segurança.
+const HomeBeneficiario = ({route, navigation}, props) => {
+
+    //Recebe o id do usuário logado e utilizará para captura dos dados próprios 
     const {idUsuarioRecebido} =  route.params;
 
     //Interações com state
@@ -53,6 +59,7 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
                         setNome(nome);
 
                         let nomeCompleto = nome.split(" ");
+                        console.log('O nome abreviado nesse caso é: ', nomeCompleto[0])
                         setNomeAbreviado(nomeCompleto[0]);
                     
                     })
@@ -106,7 +113,9 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
     }
 
     const retornarMenu = () => {
-        navigation.navigate('Index')
+
+        navigation.openDrawer();
+        
     }
 
     //Código para carregamento das fontes antes da renderização
@@ -142,6 +151,23 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
     return (
         <ScrollView style={styles.container}>
 
+            <View
+                style={[
+                styles.containerLoading,
+                {
+                    backgroundColor: loading
+                    ? "#CCCCCC55"
+                    : "#FFFFFF00",
+                },
+                ]}
+            >
+                <ActivityIndicator
+                size="large"
+                animating={loading}
+                color="#005E80"
+                />
+            </View>
+
             <LinearGradient
                 colors={['transparent', '#005E80']}
                 
@@ -152,19 +178,16 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
                         style={{paddingLeft: 20, marginTop: 50}}
                         onPress={retornarMenu}
                     >
-                        <Text style={{ color:'#005E80' }}>SAIR</Text>
+                        <Icon name='menu' type='entypo' size={40} color="#005E80" />
                     </TouchableOpacity>
                     <TouchableOpacity
                     style={styles.button_info}
                     >
-                        <Image
-                            style={styles.image_info}
-                            source={require('../../assets/icons/ajuda_azul.png')}
-                        />
+                        <Icon name='info' iconStyle={{marginTop: 15}} type='feather' size={40} color="#005E80" />
                     </TouchableOpacity>
                 </View>
 
-                <Text style={styles.texto}>Seja bem-vindo, {nomeAbreviado} ^^</Text>
+                <Text style={styles.texto}>Seja bem-vindo(a), {nomeAbreviado} ^^</Text>
 
                 <View style={styles.container_card}>
                     <CardStack 
@@ -206,7 +229,95 @@ const TelaHomeBeneficiario = ({route, navigation}, props) => {
       )
 }
 
+const TelaHomeBeneficiario = ({route, navigation}) => {
+
+    //Recebe o ID do usuário logado
+    //e envia como parâmetro para as telas
+    const {idUsuarioRecebido, flgDoisPerfis} =  route.params;
+
+    const Drawer = createDrawerNavigator();
+
+    const navegarTelaCompanheiro = () => {
+        navigation.navigate('HomeCompanheiro')
+    }
+
+    //Função para ressetar essa nevagação 
+    //e voltar para o Stack
+    const retornarMenu = () => {
+
+        navigation.navigate('Index')
+
+        // navigation.navigate(
+        //     'Index', 
+        //     {}, 
+        //     NavigationActions.navigate({ 
+        //         routeName: 'Index' 
+        //     })
+        // )
+        
+    }
+
+    return (
+      <NavigationContainer independent={true}>
+        <Drawer.Navigator initialRouteName="Dados de Beneficiário" drawerContent={props => {
+        return (
+            <DrawerContentScrollView {...props}>
+                <DrawerItemList {...props} />
+                <DrawerItem label="Voltar para o menu" onPress={retornarMenu}
+                icon={({ focused, color, size }) => <Icon name='exit-to-app' type='material' size={30} color="#005E80" />} 
+                />
+            </DrawerContentScrollView>
+            )
+        }}>
+          <Drawer.Screen 
+            name="Meus Dados"  
+            initialParams={{ idUsuarioRecebido: idUsuarioRecebido }}
+            component={TelaHomeCompanheiro} 
+            options={{
+                drawerIcon: config => <Icon
+                    size={30}
+                    name='user-edit'
+                    type='font-awesome-5'
+                    color="#005E80"></Icon>
+            }}
+          />
+          <Drawer.Screen 
+            name="Dados de Beneficiário" 
+            component={HomeBeneficiario}  
+            initialParams={{ idUsuarioRecebido: idUsuarioRecebido }}
+            options={{
+                drawerIcon: config => <Icon
+                    size={30}
+                    name='human-greeting'
+                    type='material-community'
+                    color="#005E80"></Icon>
+            }}
+          />
+          {flgDoisPerfis ?
+          <Drawer.Screen 
+            name="Dados de Companheiro" 
+            component={TelaHomeCompanheiro}  
+            initialParams={{ idUsuarioRecebido: idUsuarioRecebido }}
+            options={{
+                drawerIcon: config => <Icon
+                    size={30}
+                    name='work'
+                    type='material'
+                    color="#005E80"></Icon>
+            }}
+          /> : null}
+        </Drawer.Navigator>
+      </NavigationContainer>
+    );
+  }
+
 const styles = StyleSheet.create({
+    containerLoading: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+    },
     container: {
         backgroundColor: '#FFFFFF',
         flex: 1,

@@ -4,7 +4,8 @@ import {
   View,
   SafeAreaView, 
   StyleSheet,
-  Image} from 'react-native';
+  Image,
+  ActivityIndicator} from 'react-native';
 
 import Carousel from 'react-native-snap-carousel';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -206,6 +207,22 @@ const CardStack = (props) => {
 
     return (
       <SafeAreaView style={{flex: 1  }}>
+        <View
+              style={[
+              styles.containerLoading,
+              {
+                  backgroundColor: loading
+                  ? "#CCCCCC55"
+                  : "#FFFFFF00",
+              },
+              ]}
+          >
+              <ActivityIndicator
+              size="large"
+              animating={loading}
+              color="#005E80"
+              />
+        </View>
         <View style={{ flex: 1, flexDirection:'row', justifyContent: 'center', }}>
             <Carousel
               layout={"stack"}
@@ -224,6 +241,12 @@ const CardStack = (props) => {
 }
 
 const styles = StyleSheet.create({
+  containerLoading: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+  },
   container_principal: {
     backgroundColor: 'white',
     borderColor: '#005E80',

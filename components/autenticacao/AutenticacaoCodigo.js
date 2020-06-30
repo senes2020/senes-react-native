@@ -68,13 +68,15 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
                             navigation.navigate(
                                 'HomeBeneficiario',
                                 {
-                                    idUsuarioRecebido: idUsuarioRecebido
+                                    idUsuarioRecebido: idUsuarioRecebido,
+                                    flgDoisPerfis: false
                                 })
                         }else{
                             navigation.navigate(
                                 'HomeCompanheiro',
                                 {
-                                    idUsuarioRecebido: idUsuarioRecebido
+                                    idUsuarioRecebido: idUsuarioRecebido,
+                                    flgDoisPerfis: false
                                 })
                         }
                     }

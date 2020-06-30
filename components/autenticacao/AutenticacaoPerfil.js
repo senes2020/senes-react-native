@@ -20,7 +20,8 @@ const TelaAutenticacaoPerfil = ({route, navigation}, props) =>{
         navigation.navigate(
             'HomeBeneficiario',
             {
-                idUsuarioRecebido: idUsuarioRecebido
+                idUsuarioRecebido: idUsuarioRecebido,
+                flgDoisPerfis: true
             })
     }
 
@@ -28,7 +29,8 @@ const TelaAutenticacaoPerfil = ({route, navigation}, props) =>{
         navigation.navigate(
             'HomeCompanheiro',
             {
-                idUsuarioRecebido: idUsuarioRecebido
+                idUsuarioRecebido: idUsuarioRecebido,
+                flgDoisPerfis: true
             })
     }
 
