@@ -19,20 +19,6 @@ const PaginaInicial = ({navigation}, props) =>{
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
 
-    /*
-    const useEffect = async () => {
-        
-        //Verifica se usuário já está logado - temporariamente desabilitado
-    
-        const session = await isSignedIn()
-        if(session){
-
-            //Mudar aqui pra Home depois
-            navigation.replace('Autenticacao')
-        }
-
-    }*/
-
     //Código para carregamento das fontes antes da renderização
     if (!isLoadingComplete && !props.skipLoadingScreen) {
         return (

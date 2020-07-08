@@ -3,7 +3,6 @@ import 'react-native-gesture-handler'
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native';
-import { NavigationActions, addNavigationHelpers } from 'react-navigation'
 
 //Componentes
 import Autenticacao from './autenticacao/Autenticacao';
@@ -22,8 +21,6 @@ import TelaAtualizarEmailAcesso from './autenticacao/AtualizarEmailAcesso';
 import TelaConfirmacaoCodigoNovoEmail from './autenticacao/ConfirmacaoAtualizacaoEmail';
 import TelaAtualizarEmailEsquecimento from './autenticacao/AtualizarEmailEsquecimento';
 import SplashScreen from './splash/SplashScreen';
-import Proposta from './tools/DatePicker';
-
 
 const Stack = createStackNavigator();
 

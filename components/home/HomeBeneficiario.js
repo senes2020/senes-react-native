@@ -20,6 +20,7 @@ import TelaHomeCompanheiro from './HomeCompanheiro'
 import { NavigationContainer} from '@react-navigation/native'
 import { NavigationActions, StackActions } from 'react-navigation'
 import { Icon } from 'react-native-elements'
+import NavigatorAutenticado from '../NavigatorAutenticado'
 
 const HomeBeneficiario = ({route, navigation}, props) => {
 
@@ -94,6 +95,7 @@ const HomeBeneficiario = ({route, navigation}, props) => {
     //Função chamada para agendamentos
     const exibirProfissional = () => {
         Alert.alert('O profissional escolhido tem o número: ' + profissionalExibido)
+        navigation.navigate('Agendamento')
     }
 
     //Função que atualiza dados do profissional exibido
@@ -237,10 +239,6 @@ const TelaHomeBeneficiario = ({route, navigation}) => {
 
     const Drawer = createDrawerNavigator();
 
-    const navegarTelaCompanheiro = () => {
-        navigation.navigate('HomeCompanheiro')
-    }
-
     //Função para ressetar essa nevagação 
     //e voltar para o Stack
     const retornarMenu = () => {
@@ -284,7 +282,7 @@ const TelaHomeBeneficiario = ({route, navigation}) => {
           <Drawer.Screen 
             name="Dados de Beneficiário" 
             component={HomeBeneficiario}  
-            initialParams={{ idUsuarioRecebido: idUsuarioRecebido }}
+            initialParams={{ idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: flgDoisPerfis }}
             options={{
                 drawerIcon: config => <Icon
                     size={30}
@@ -293,11 +291,16 @@ const TelaHomeBeneficiario = ({route, navigation}) => {
                     color="#005E80"></Icon>
             }}
           />
+          <Drawer.Screen 
+            name="teste"
+            component={NavigatorAutenticado}  
+            initialParams={{ idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: flgDoisPerfis }}
+          />
           {flgDoisPerfis ?
           <Drawer.Screen 
             name="Dados de Companheiro" 
             component={TelaHomeCompanheiro}  
-            initialParams={{ idUsuarioRecebido: idUsuarioRecebido }}
+            initialParams={{ idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: flgDoisPerfis }}
             options={{
                 drawerIcon: config => <Icon
                     size={30}
