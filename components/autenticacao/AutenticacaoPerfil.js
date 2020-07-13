@@ -17,21 +17,23 @@ const TelaAutenticacaoPerfil = ({route, navigation}, props) =>{
 
     //Funções de direcionamento
     const direcionarBeneficiario = () => {
-        navigation.navigate(
-            'HomeBeneficiario',
-            {
-                idUsuarioRecebido: idUsuarioRecebido,
-                flgDoisPerfis: true
-            })
+        
+        //Faz o encaminhamento para o navigator responsável pelas páginas que exigem autenticação
+        //e escolhe a página apropriada
+        navigation.navigate('SignedInNavigator', {
+            screen: 'DrawerHome',
+            params: { idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: true, telaInicial: 'beneficiario' },
+        });
     }
 
     const direcionarCompanheiro = () => {
-        navigation.navigate(
-            'HomeCompanheiro',
-            {
-                idUsuarioRecebido: idUsuarioRecebido,
-                flgDoisPerfis: true
-            })
+        
+        //Faz o encaminhamento para o navigator responsável pelas páginas que exigem autenticação
+        //e escolhe a página apropriada
+        navigation.navigate('SignedInNavigator', {
+            screen: 'DrawerHome',
+            params: { idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: true, telaInicial: 'companheiro' },
+        });
     }
 
     //Código para carregamento das fontes antes da renderização

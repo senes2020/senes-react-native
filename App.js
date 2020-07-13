@@ -4,6 +4,7 @@ import Navigator from './components/Navigator'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import rootReducer from './components/reducers/rootReducer'
+import Routes from './navigation/route';
 //import connect from "react-redux" 
 //import { changeText } from "../actions/homeBeneficiarioActions"
 
@@ -17,7 +18,8 @@ export default class App extends React.Component {
     return(
         //Componente que apresentará todos os rumos de navegação do App
         //<Provider store={store}><Navigator/></Provider>
-        <Navigator/>
+        //<Navigator/>
+        <Routes/>
     )
   }
   

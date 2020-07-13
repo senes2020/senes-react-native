@@ -14,6 +14,7 @@ import FloatingLabelInput from '../tools/FloatingLabelInputWhite'
 //Importando serviços
 import { autenticarCodigo, verificarFinaisCelularesUsuario } from '../../services/auth-service'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 //Fonte: https://www.npmjs.com/package/react-native-simple-toast
 //Importando toast simples para avisos de validação
@@ -58,26 +59,38 @@ const TelaAutenticacaoCodigo = ({route, navigation}, props) =>{
                     const tipoPerfilCompanheiro = json.flgCompanheiro;
                     
                     if(tipoPerfilBeneficiario == '1' && tipoPerfilCompanheiro == '1'){
-                        navigation.navigate(
-                            'AutenticacaoPerfil',
-                            {
-                                idUsuarioRecebido: idUsuarioRecebido
-                            })  
+                        
+                        //Faz o encaminhamento para o navigator responsável pelas páginas que exigem autenticação
+                        //e escolhe a página apropriada    
+                        navigation.navigate('AutenticacaoPerfil', {
+                            idUsuarioRecebido: idUsuarioRecebido, 
+                            flgDoisPerfis: true },
+                        );
+
                     }else{
                         if(tipoPerfilBeneficiario == '1'){
-                            navigation.navigate(
-                                'HomeBeneficiario',
-                                {
-                                    idUsuarioRecebido: idUsuarioRecebido,
-                                    flgDoisPerfis: false
-                                })
+                            
+                            //Faz o encaminhamento para o navigator responsável pelas páginas que exigem autenticação
+                            //e escolhe a página apropriada
+                            navigation.navigate('SignedInNavigator', {
+                                screen: 'DrawerHome',
+                                params: { 
+                                    idUsuarioRecebido: idUsuarioRecebido, 
+                                    flgDoisPerfis: false, 
+                                    telaInicial: 'beneficiario'},
+                            });
+
                         }else{
-                            navigation.navigate(
-                                'HomeCompanheiro',
-                                {
-                                    idUsuarioRecebido: idUsuarioRecebido,
-                                    flgDoisPerfis: false
-                                })
+                            
+                            //Faz o encaminhamento para o navigator responsável pelas páginas que exigem autenticação
+                            //e escolhe a página apropriada
+                            navigation.navigate('SignedInNavigator', {
+                                screen: 'DrawerHome',
+                                params: { 
+                                    idUsuarioRecebido: idUsuarioRecebido, 
+                                    flgDoisPerfis: false,
+                                    telaInicial: 'companheiro' },
+                            });
                         }
                     }
                 })

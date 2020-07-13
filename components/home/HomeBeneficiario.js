@@ -25,7 +25,8 @@ import NavigatorAutenticado from '../NavigatorAutenticado'
 const HomeBeneficiario = ({route, navigation}, props) => {
 
     //Recebe o id do usuário logado e utilizará para captura dos dados próprios 
-    const {idUsuarioRecebido} =  route.params;
+    //const idUsuarioRecebido = 22;
+    const {idUsuarioRecebido} = route.params;
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -94,8 +95,17 @@ const HomeBeneficiario = ({route, navigation}, props) => {
 
     //Função chamada para agendamentos
     const exibirProfissional = () => {
-        Alert.alert('O profissional escolhido tem o número: ' + profissionalExibido)
-        navigation.navigate('Agendamento')
+        
+        //Alert.alert('O profissional escolhido tem o número: ' + profissionalExibido)
+        
+        //Encaminhando para a página de Agendamentos, referenciando a rota de páginas logadas
+        navigation.navigate(
+            'Agendamento', 
+            {}, 
+            NavigationActions.navigate({ 
+                routeName: 'SignedInNavigator'
+            })
+        )
     }
 
     //Função que atualiza dados do profissional exibido
@@ -231,89 +241,6 @@ const HomeBeneficiario = ({route, navigation}, props) => {
       )
 }
 
-const TelaHomeBeneficiario = ({route, navigation}) => {
-
-    //Recebe o ID do usuário logado
-    //e envia como parâmetro para as telas
-    const {idUsuarioRecebido, flgDoisPerfis} =  route.params;
-
-    const Drawer = createDrawerNavigator();
-
-    //Função para ressetar essa nevagação 
-    //e voltar para o Stack
-    const retornarMenu = () => {
-
-        navigation.navigate('Index')
-
-        // navigation.navigate(
-        //     'Index', 
-        //     {}, 
-        //     NavigationActions.navigate({ 
-        //         routeName: 'Index' 
-        //     })
-        // )
-        
-    }
-
-    return (
-      <NavigationContainer independent={true}>
-        <Drawer.Navigator initialRouteName="Dados de Beneficiário" drawerContent={props => {
-        return (
-            <DrawerContentScrollView {...props}>
-                <DrawerItemList {...props} />
-                <DrawerItem label="Voltar para o menu" onPress={retornarMenu}
-                icon={({ focused, color, size }) => <Icon name='exit-to-app' type='material' size={30} color="#005E80" />} 
-                />
-            </DrawerContentScrollView>
-            )
-        }}>
-          <Drawer.Screen 
-            name="Meus Dados"  
-            initialParams={{ idUsuarioRecebido: idUsuarioRecebido }}
-            component={TelaHomeCompanheiro} 
-            options={{
-                drawerIcon: config => <Icon
-                    size={30}
-                    name='user-edit'
-                    type='font-awesome-5'
-                    color="#005E80"></Icon>
-            }}
-          />
-          <Drawer.Screen 
-            name="Dados de Beneficiário" 
-            component={HomeBeneficiario}  
-            initialParams={{ idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: flgDoisPerfis }}
-            options={{
-                drawerIcon: config => <Icon
-                    size={30}
-                    name='human-greeting'
-                    type='material-community'
-                    color="#005E80"></Icon>
-            }}
-          />
-          <Drawer.Screen 
-            name="teste"
-            component={NavigatorAutenticado}  
-            initialParams={{ idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: flgDoisPerfis }}
-          />
-          {flgDoisPerfis ?
-          <Drawer.Screen 
-            name="Dados de Companheiro" 
-            component={TelaHomeCompanheiro}  
-            initialParams={{ idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: flgDoisPerfis }}
-            options={{
-                drawerIcon: config => <Icon
-                    size={30}
-                    name='work'
-                    type='material'
-                    color="#005E80"></Icon>
-            }}
-          /> : null}
-        </Drawer.Navigator>
-      </NavigationContainer>
-    );
-  }
-
 const styles = StyleSheet.create({
     containerLoading: {
         position: "absolute",
@@ -409,4 +336,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default TelaHomeBeneficiario
+export default HomeBeneficiario
