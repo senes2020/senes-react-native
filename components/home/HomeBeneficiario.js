@@ -100,7 +100,7 @@ const HomeBeneficiario = ({route, navigation}, props) => {
         
         //Encaminhando para a página de Agendamentos, referenciando a rota de páginas logadas
         navigation.navigate(
-            'Agendamento', 
+            'Proposta', 
             {}, 
             NavigationActions.navigate({ 
                 routeName: 'SignedInNavigator'
