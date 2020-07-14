@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react'
 import { 
   Platform, 
   StyleSheet, 
@@ -9,47 +9,114 @@ import {
   Text, 
   View,
   ImageBackground,
-  Dimensions
+  Dimensions,
+  Linking
 } from 'react-native';
 import { Rating, AirbnbRating, Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import ImageCarousel from '../tools/ImageCarousel';
 import { AppLoading } from 'expo';
-import TelaHomeBeneficiario from './HomeBeneficiario';
-
-//Importantando classes para o drawer
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
-import { NavigationContainer} from '@react-navigation/native'
+import { coletarDadosCompanheiro } from '../../services/data-service'
+import CurativosAvaliacao from '../tools/CurativosAvaliacao';
 
 const { width } = Dimensions.get('window'); 
 let nome_user = 'Alberto';
 
-const HomeCompanheiro = ({route, navigation}, props) => {
+const TelaHomeCompanheiro = ({route, navigation}, props) => {
+
+    //Recebe o id do usuário logado e utilizará para captura dos dados próprios
+    const {idUsuarioRecebido} = route.params;
 
     //Interações com state
-    const [isLoadingComplete, setLoadingComplete] = React.useState(false);
+    const [isLoadingComplete, setLoadingComplete] = useState(false);
+    const [nome, setNome] = useState();
+    const [nomeAbreviado, setNomeAbreviado] = useState();
+    const [avaliacao, setAvaliacao] = useState();
+    const [loading, setLoading] = useState(false);
+    const [dadosOverlay, setDadosOverlay] = useState('teste');
+    const [visibilidadeOverlay, setVisibilidadeOverlay] = useState(false);
+    const [profissionalExibido, setProfissionalExibido] = useState(0);
+
+    React.useEffect(() => {
+
+      //Atualizando tela com loading
+      setLoading(true);
+
+      async function coletarDadosEntidade() {
+        
+          try{
+          
+              const response = await coletarDadosCompanheiro(idUsuarioRecebido)
+  
+              //Atualizando tela sem loading
+              setLoading(false);
+  
+              //Se a resposta voltar com status 200 OK, 
+              //prossegue, senão dá mensagem
+              if(response.ok){
+                  
+                  response.json().then((json) => {
+                  
+                      const nome = json.nome;
+                      const avaliacao = json.avaliacao;
+
+                      setNome(nome);
+                      setAvaliacao(avaliacao);
+
+                      let nomeCompleto = nome.split(" ");
+                      console.log('O nome abreviado nesse caso é: ', nomeCompleto[0])
+                      setNomeAbreviado(nomeCompleto[0]);
+                  
+                  })
+              }else if(response.status == 404){
+                  
+                  Alert.alert(
+                  "Erro de Obtenção de dados :(",
+                  "Ooops, sorry, erro nosso! Consulte os desenvolvedores sobre a passagem de ID de usuário para a tela Home.",
+                  [
+                      
+                      { text: "OK"}
+                  ],
+                  { cancelable: false }
+                  );
+              }
+  
+          }catch(erro){
+              console.log('entrei no catch')
+              console.log(erro)
+          }
+
+      }
+  
+      coletarDadosEntidade();
+    }, []);
+
+    //Realiza chamada telefônica para o 0800 do SENES
+    const telefonarCentral = () => {
+        Linking.openURL(`tel:11997671801`)
+    }
 
     //Código para carregamento das fontes antes da renderização
-    // if (!isLoadingComplete && !props.skipLoadingScreen) {
-    //     return (
-    //         <AppLoading
-    //             //startAsync={loadResourcesAsync}
-    //             onError={handleLoadingError}
-    //             onFinish={() => handleFinishLoading(setLoadingComplete)}
-    //         />
-    //     );
-    // }
+    if (!isLoadingComplete && !props.skipLoadingScreen) {
+        return (
+            <AppLoading
+                startAsync={loadResourcesAsync}
+                onError={handleLoadingError}
+                onFinish={() => handleFinishLoading(setLoadingComplete)}
+            />
+        );
+    }
 
-    // async function loadResourcesAsync() {
-    //     await Promise.all([
-    //         Font.loadAsync({
-    //             'montserrat-regular-texto': require('../../assets/fonts/montserrat/Montserrat-Regular.ttf'),
-    //             'montserrat-titulo': require('../../assets/fonts/montserrat/Montserrat-Light.ttf'),
-    //             'montserrat-titulo-magro': require('../../assets/fonts/montserrat/Montserrat-Thin.ttf'),
-    //             'montserrat-negrito': require('../../assets/fonts/montserrat/Montserrat-SemiBold.ttf')
-    //         }),
-    //     ]);
-    // }
+    async function loadResourcesAsync() {
+        await Promise.all([
+            Font.loadAsync({
+                'montserrat-regular-texto': require('../../assets/fonts/montserrat/Montserrat-Regular.ttf'),
+                'montserrat-titulo': require('../../assets/fonts/montserrat/Montserrat-Light.ttf'),
+                'montserrat-titulo-magro': require('../../assets/fonts/montserrat/Montserrat-Thin.ttf'),
+                'montserrat-negrito': require('../../assets/fonts/montserrat/Montserrat-SemiBold.ttf')
+            }),
+        ]);
+    }
 
     function handleLoadingError(error) {
     console.warn(error);
@@ -65,7 +132,7 @@ const HomeCompanheiro = ({route, navigation}, props) => {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
 
           <LinearGradient
               colors={['transparent', '#005E80']}    
@@ -73,7 +140,7 @@ const HomeCompanheiro = ({route, navigation}, props) => {
 
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <TouchableOpacity
-                    style={{paddingLeft: 20, marginTop: 50}}
+                    style={{paddingLeft: 20}}
                     onPress={retornarMenu}
                 >
                     <Icon name='menu' type='entypo' size={40} color="#005E80" />
@@ -81,175 +148,162 @@ const HomeCompanheiro = ({route, navigation}, props) => {
                 <TouchableOpacity
                 style={styles.button_info}
                 >
-                    <Icon name='info' iconStyle={{marginTop: 15}} type='feather' size={40} color="#005E80" />
+                    <Icon name='info' type='feather' size={40} color="#005E80" />
                 </TouchableOpacity>
             </View>
 
-            <Text style={styles.textWelcome}>Olá {nome_user}</Text>
+            <Text style={styles.textWelcome}>Seja bem-vindo(a), {nomeAbreviado} ^^</Text>
 
-            <TouchableWithoutFeedback onPress={() => {
-                alert('Atualizando status...');
-            }}>
+            <View style={styles.container_info_pessoal}>
 
+              <View style={styles.container_avaliacao}>
+                <Text style={styles.tituloAvaliacao}>Nota Pessoal</Text>
+                <CurativosAvaliacao avaliacao={avaliacao}/>
+              </View>
+
+              <TouchableWithoutFeedback onPress={() => {
+                  alert('Atualizando status...');
+              }}>
                 <View style={styles.button_disponibilidade}>
-
-                <Text>Disponível</Text>
-
+                  <Text style={styles.texto_disponibilidade}>Disponível</Text>
                 </View>
+              </TouchableWithoutFeedback>
 
-            </TouchableWithoutFeedback>  
-
+            </View>
+            
             <View style={styles.carouselContainer2}>
                 <ImageCarousel/>
             </View>
 
-            <View style={styles.containRating}>
-                <Rating
-                imageSize={25}
-                readonly 
-                style={styles.rating} />
-                <Text style={styles.textLegenda}>Nota Pessoal</Text>
+            <View style={styles.container_ajuda}>
+                <Text style={styles.texto_ajuda}>Precisa de ajuda? Vem conversar com a gente ^^</Text>
+                <TouchableOpacity
+                    style={styles.button_telefonar}
+                    onPress={telefonarCentral}
+                    disabled={loading ? true : false}
+                >
+                    <Text style={styles.button_telefonar_texto}>TELEFONAR</Text>
+                </TouchableOpacity>
             </View>
           
           </LinearGradient>
 
-        </View>   
+        </ScrollView>  
       )
 }
 
-const TelaHomeCompanheiro = ({route, navigation}) => {
-
-  //Recebe o ID do usuário logado
-  //e envia como parâmetro para as telas
-  const {idUsuarioRecebido, flgDoisPerfis} =  route.params;
-
-  const Drawer = createDrawerNavigator();
-
-  //Função para ressetar essa nevagação 
-  //e voltar para o Stack
-  const retornarMenu = () => {
-
-      //console.log(navigation)
-
-      navigation.navigate('Index')
-
-      // navigation.navigate(
-      //     'Index', 
-      //     {}, 
-      //     NavigationActions.navigate({ 
-      //         routeName: 'Index' 
-      //     })
-      // )
-      
-  }
-
-  return (
-    <NavigationContainer independent={true}>
-      <Drawer.Navigator initialRouteName="Dados de Companheiro" drawerContent={props => {
-      return (
-          <DrawerContentScrollView {...props}>
-              <DrawerItemList {...props} />
-              <DrawerItem label="Voltar para o menu" onPress={retornarMenu}
-              icon={({ focused, color, size }) => <Icon name='exit-to-app' type='material' size={30} color="#005E80" />} 
-              />
-          </DrawerContentScrollView>
-          )
-      }}>
-        <Drawer.Screen 
-          name="Meus Dados"  
-          initialParams={{ idUsuarioRecebido: idUsuarioRecebido }}
-          component={TelaHomeCompanheiro} 
-          options={{
-              drawerIcon: config => <Icon
-                  size={30}
-                  name='user-edit'
-                  type='font-awesome-5'
-                  color="#005E80"></Icon>
-          }}
-        />
-        <Drawer.Screen 
-          name="Dados de Companheiro" 
-          component={HomeCompanheiro}  
-          initialParams={{ idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: flgDoisPerfis }}
-          options={{
-              drawerIcon: config => <Icon
-                  size={30}
-                  name='work'
-                  type='material'
-                  color="#005E80"></Icon>
-          }}
-        />
-        {flgDoisPerfis ?
-        <Drawer.Screen 
-        name="Dados de Beneficiario" 
-        component={TelaHomeBeneficiario}  
-        initialParams={{ idUsuarioRecebido: idUsuarioRecebido, flgDoisPerfis: flgDoisPerfis }}
-        options={{
-            drawerIcon: config => <Icon
-                size={30}
-                name='human-greeting'
-                type='material-community'
-                color="#005E80"></Icon>
-        }}
-       /> : null}
-      </Drawer.Navigator>
-    </NavigationContainer>
-  );
-}
-
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#ffffff',
+      container: {
+        flex: 1,
+        flexDirection: "column"
+      },
+      textWelcome: {
+        color: "#005E80",
+        fontFamily: "montserrat-regular-texto",
+        fontSize: 25,
+        textAlign: 'center',
+        marginRight: 30,
+        marginLeft: 30,
+        marginBottom: 30,
+        marginTop: 10
+      },
+      button_disponibilidade:{
+        alignSelf: 'flex-end',
+        backgroundColor: 'green',
+        borderRadius: 20,
+        padding: 5,
+        marginRight: 15,
+        marginBottom: 10
+      },
+      texto_disponibilidade: {
+        color: 'white',
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 3,
+        paddingBottom: 3
+
+      },
+    button_info: {
+      alignSelf: 'flex-start',
+      borderRadius: 20,
+      padding: 5,
+      marginRight: 5,
+      marginBottom: 10
     },
-    textWelcome: {
-      color: '#ffffffcc',
-      marginBottom: 5,
-      alignSelf:'flex-start',
-      marginStart: 8,
-      opacity: 0.5,
-      fontSize: 20
+    carouselContainer2:{ 
+      width: width,
+      height:width*0.99,
+      marginBottom:30,
+    }, 
+    containRating:{
+      width: 250,
+      alignItems:'center',
     },
-    button_disponibilidade:{
-      width: 100,
+    rating:{
       height: 25,
-      backgroundColor:'#ffffff',
-      alignItems: 'center',
-      borderRadius: 8,
+      width: 100
+    },
+    textLegenda:{
+      width: 100,
+      alignSelf: 'center',
+      textAlign: 'center'
+    },
+    gradient:{
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: 0,
+      height: 490,
+    },
+    disponibilidade: {
+      alignSelf: 'flex-start',
+      backgroundColor: 'green',
+      borderRadius: 20,
+      padding: 5,
+      marginRight: 5,
+      marginBottom: 10
+    },
+    container_info_pessoal: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      margin: 20
+    },
+    container_ajuda: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      backgroundColor: '#969FAA',
+    },
+    texto_ajuda: {
+      color: "#47525E",
+      fontFamily: "montserrat-regular-texto",
+      fontSize: 15,
+      width: 150,
+      textAlign: 'justify',
+      marginLeft: 30,
+      alignSelf: 'center'
+    },
+    button_telefonar: {
+      height: 50,
+      margin: 40,
+      borderColor: "#47525E",
       borderWidth: 2,
-      borderColor: '#5555ff',
-      marginBottom: 50,
-      marginEnd: 8,
-      marginVertical: -40,
-      alignSelf:'flex-end'
-  },
-  carouselContainer2:{ 
-    width: width,
-    height:width*0.99,
-    marginBottom:30,
-  }, 
-  containRating:{
-    width: 250,
-    alignItems:'center',
-  },
-  rating:{
-    height: 25,
-    width: 100
-  },
-  textLegenda:{
-    width: 100,
-    alignSelf: 'center',
-    textAlign: 'center'
-  },
-  gradient:{
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    height: 490,
-  }
+      borderRadius: 5,
+      justifyContent: 'center',
+      padding: 10,
+      backgroundColor: '#47525E'
+    },
+    button_telefonar_texto:{
+      fontFamily: "montserrat-regular-texto",
+      color: "#FFFFFF",
+      textAlign: "center",
+      fontSize: 18
+    },
+    tituloAvaliacao:{
+      fontFamily: "montserrat-regular-texto",
+      color: "#005E80",
+      textAlign: "center",
+      fontSize: 18
+    }
   });
   
 

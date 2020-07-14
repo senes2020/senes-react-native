@@ -13,19 +13,12 @@ import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler'
 import CardStack from '../tools/CardStack'
 import CustomOverlay from '../tools/CustomOverlay'
 import { LinearGradient } from 'expo-linear-gradient';
-
-//Importantando classes para o drawer
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
-import TelaHomeCompanheiro from './HomeCompanheiro'
-import { NavigationContainer} from '@react-navigation/native'
-import { NavigationActions, StackActions } from 'react-navigation'
+import { NavigationActions} from 'react-navigation'
 import { Icon } from 'react-native-elements'
-import NavigatorAutenticado from '../NavigatorAutenticado'
 
 const HomeBeneficiario = ({route, navigation}, props) => {
 
     //Recebe o id do usuário logado e utilizará para captura dos dados próprios 
-    //const idUsuarioRecebido = 22;
     const {idUsuarioRecebido} = route.params;
 
     //Interações com state

@@ -10,6 +10,7 @@ import {
   Image
 } from 'react-native';
 import Carousel from 'react-native-anchor-carousel';
+import { Icon } from 'react-native-elements';
 
 const { width } = Dimensions.get('window');
 
@@ -22,28 +23,28 @@ const data = [
     horario: 'Horário: 10:20am até 11:20am',
     dia:'Data: 11 de fevereiro, 2019',
     local:'Local: Rua Santa Barbara, SP',
-    pagamento: 'Valor Hora: R$ 80,00'
+    pagamento: '80,00'
   },
   {
     title: 'Me ajude com às compras',
     horario: 'Horário: 10:20am até 11:20am',
     dia:'Data: 11 de fevereiro, 2019',
     local:'Local: Rua Santa Barbara, SP',
-    pagamento: 'Valor Hora: R$ 80,00'
+    pagamento: '80,00'
   },
   {
     title: 'Me ajude com às compras',
     horario: 'Horário: 10:20am até 11:20am',
     dia:'Data: 11 de fevereiro, 2019',
     local:'Local: Rua Santa Barbara, SP',
-    pagamento: 'Valor Hora: R$ 80,00'
+    pagamento: '80,00'
   },
   {
     title: 'Me ajude com às compras',
     horario: 'Horário: 10:20am até 11:20am',
     dia:'Data: 11 de fevereiro, 2019',
     local:'Local: Rua Santa Barbara, SP',
-    pagamento: 'Valor Hora: R$ 80,00'
+    pagamento: '80,00'
   },
 ]; 
 
@@ -59,23 +60,20 @@ export default class ImageCarousel extends Component {
         }}
       >
         <View style={styles.lowerContainer}>
+          <Icon name='event-note' type='material' size={70} color="#005E80" />
           <Text style={styles.titleText}>{title}</Text>
-          <Text style={styles.titleText}>(^.^)</Text>
           <Text style={styles.contentText}>{horario}</Text>
           <Text style={styles.contentText}>{dia}</Text>
           <Text style={styles.contentText}>{local}</Text>
         </View>
-        <Text style={styles.valueText}>{pagamento}</Text>
-        <Image
-            source={{ uri: negativoImagem }}
-            style={styles.negativoBotao} >
-
-        </Image>
-        <Image
-            source={{ uri: aceitarImagem }}
-            style={styles.aceitarBotao}
-        >
-        </Image>
+        <View style={styles.container_acao}>
+          <TouchableOpacity>
+            <Icon name='closecircle' type='antdesign' size={50} color="#800f00" />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Icon name='checkcircle' type='antdesign' size={50} color="#008013" />
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -106,7 +104,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffffff',
     flex: 1,
     borderRadius: 10,
-    borderColor: '#5555ff',
     elevation: 3,
     marginStart: 10,
     },
@@ -134,12 +131,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     alignSelf: 'center',
-    textAlign: 'center'
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20
   },
   contentText: {
-    marginTop: 25,
+    marginTop: 10,
     fontSize: 15,
-    alignSelf: 'center'
+    alignSelf: 'flex-start'
   },
   valueText:{
     marginTop: 10,
@@ -148,20 +147,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#00ff00',
   },
-  negativoBotao:{
-    height: 40,
-    width: 40,
-    alignContent: 'center',
-    marginTop: 280,
-    marginStart: 10,
-    position: 'absolute'
-  },
-  aceitarBotao:{
-    marginTop: 280,
-    marginStart: 205,
-    height: 40,
-    width: 40,
-    alignContent: 'center',
-    position: 'absolute'
+  container_acao:{
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    margin: 30
   }
 });
