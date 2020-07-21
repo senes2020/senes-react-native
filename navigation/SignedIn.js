@@ -4,12 +4,13 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack'
 
 //Componentes
-import TelaAgendamento from '../components/agendamento/TelaAgendamento';
 import DrawerNav from './DrawerNavigatorHome';
 import Proposta from '../components/agendamento/Proposta';
 import DateCal from '../components/agendamento/DateCal';
 import ConfirmacaoAgendamento from '../components/agendamento/ConfirmacaoAgendamento';
 import ConclusaoAgendamento from '../components/agendamento/ConclusaoAgendamento';
+import PagamentoDinheiro from '../components/pagamento/PagamentoDinheiro';
+import CartaoCredito from '../components/pagamento/PagamentoCartaoCredito';
 
 const Stack = createStackNavigator();
 
@@ -41,7 +42,17 @@ export default function SignedInNavigator(){
                 name="ConclusaoAgendamento"
                 component={ConclusaoAgendamento}
                 options={{headerShown: false}}
-            /> 
+            />
+            <Stack.Screen
+                name="PagamentoDinheiro"
+                component={PagamentoDinheiro}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="PagamentoCartaoCredito"
+                component={CartaoCredito}
+                options={{headerShown: false}}
+            />    
         </Stack.Navigator>
     )
 }

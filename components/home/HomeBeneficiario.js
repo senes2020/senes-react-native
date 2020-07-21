@@ -23,6 +23,7 @@ const HomeBeneficiario = ({route, navigation}, props) => {
 
     //Interações com state
     const [isLoadingComplete, setLoadingComplete] = useState(false);
+    const [codigoBeneficiario, setCodigoBeneficiario] = useState();
     const [nome, setNome] = useState();
     const [nomeAbreviado, setNomeAbreviado] = useState();
     const [loading, setLoading] = useState(false);
@@ -56,6 +57,9 @@ const HomeBeneficiario = ({route, navigation}, props) => {
                         let nomeCompleto = nome.split(" ");
                         console.log('O nome abreviado nesse caso é: ', nomeCompleto[0])
                         setNomeAbreviado(nomeCompleto[0]);
+
+                        const codigoBanco = json.id;
+                        setCodigoBeneficiario(codigoBanco )
                     
                     })
                 }else if(response.status == 404){
@@ -94,7 +98,10 @@ const HomeBeneficiario = ({route, navigation}, props) => {
         //Encaminhando para a página de Agendamentos, referenciando a rota de páginas logadas
         navigation.navigate(
             'Proposta', 
-            {}, 
+            {
+                idProfissionalEscolhido: profissionalExibido,
+                idBeneficiario: codigoBeneficiario
+            }, 
             NavigationActions.navigate({ 
                 routeName: 'SignedInNavigator'
             })

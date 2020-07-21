@@ -18,6 +18,7 @@ const CardStack = (props) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [carouselItems, setCarouselItems] = useState(
                         [{
+                          codigo: '',
                           nome: '',
                           sexo: '',
                           avaliacao: 0,
@@ -64,6 +65,7 @@ const CardStack = (props) => {
                         })
 
                         let companheiro = {
+                          codigo: profissional.id,
                           nome: profissional.nome,
                           sexo: profissional.sexo,
                           avaliacao: profissional.avaliacao,
@@ -122,8 +124,15 @@ const CardStack = (props) => {
     //e envia a mesma para o componente pai
     //obtem a função profissional pelo props
     const atualizaIndex = (index) => {
+
+      //Atualização do index
       setActiveIndex(index);
-      props.profissional(index);
+
+      //Código do profissional
+      const codigoProfissional = carouselItems[index].codigo
+
+      //Fazendo o envio do código
+      props.profissional(codigoProfissional);
     }
 
     const _renderItem = ({item,index}) => {

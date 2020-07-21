@@ -38,3 +38,19 @@ export const coletarProfissionais = async () =>{
 
     return response
 }
+
+export const coletarEndereco = async (cep) =>{
+
+    const params = {
+        method: 'GET',
+        headers: {
+            'Content-type': 'application/json'
+        },
+    }
+    
+    const cepDigitado = cep
+
+    const URL = 'https://viacep.com.br/ws/'+ cepDigitado +'/json/'
+
+    return await fetch(URL, params)
+}

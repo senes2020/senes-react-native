@@ -24,7 +24,13 @@ export default function Routes() {
             headerShown: false,
           }}
         />
-        <Stack.Screen name="SignedInNavigator" component={SignedInNavigator} />
+        <Stack.Screen 
+          name="SignedInNavigator" 
+          component={SignedInNavigator}
+          options={{
+            headerShown: false,
+          }} 
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
