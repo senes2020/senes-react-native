@@ -116,13 +116,12 @@ class DateCal extends Component {
               {format(this.state.data, "dd/MM/yyyy")}
             </Text>
             </View>
-        
+            
             <TextInput style={styles.horario_inicio}
                underlineColorAndroid = "transparent"
                placeholder = "Digite um horário para início"
                placeholderTextColor = "#fff"
                autoCapitalize = "none"
-               keyboardType="numeric"
                value={this.state.horarioInicio}
                onChangeText={(texto) => this.setState({horarioInicio:texto})}
                maxLength={5}
@@ -133,7 +132,6 @@ class DateCal extends Component {
                underlineColorAndroid = "transparent"
                placeholder = "Digite um horário para término"
                placeholderTextColor = "#fff"
-               keyboardType="numeric"
                value={this.state.horarioFim}
                onChangeText={(texto) => this.setState({horarioFim:texto})}
                maxLength={5}>

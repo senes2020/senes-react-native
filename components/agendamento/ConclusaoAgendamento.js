@@ -7,7 +7,7 @@ const ConclusaoAgendamento = ( {navigation}, props) =>{
 
     useEffect(() => {
         setTimeout(() => {
-            navigation.navigate('Proposta')
+            navigation.navigate('DrawerHome')
         }, 4000)
     })
 

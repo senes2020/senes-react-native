@@ -4,20 +4,150 @@ import { TouchableOpacity, TextInput } from 'react-native-gesture-handler';
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-import Proposta from './Proposta';
 import { format } from "date-fns";
+import { realizarPagamento, realizarAgendamento } from '../../services/agendamento-service';
 
 const ConfirmacaoAgendamento = ( {route, navigation}, props) =>{
 
-   const {dataInicio, horarioInicio, horarioFim} = route.params;
+  //obtendo os dados de agendamento pela navegação
+  const {agendamento} = route.params;
 
-    const conclusaoAgendamento = () => {
-      navigation.navigate('ConclusaoAgendamento');
+  //Função que salva o agendamento de acordo com o objeto recebido
+  async function salvarAgendamento(agendamento){
+    
+    try {
+      
+      const response = await realizarAgendamento(agendamento)
+
+      if(response.ok){
+
+        response.json().then((json) => {            
+          console.log(json)
+        })
+
+        //Encaminha para a tela de conclusão caso tenha funcionado
+        navigation.navigate('ConclusaoAgendamento')
+
+      }else if(response.status == 404){
+                    
+          Alert.alert(
+          "Erro de Obtenção de dados :(",
+          "Ooops, sorry, erro nosso! Consulte os desenvolvedores.",
+          [
+              
+              { text: "OK"}
+          ],
+          { cancelable: false }
+          );
+      }
+
+    } catch (error) {
+      console.log('agendamento não rolou meu', error)
     }
 
-    const voltar = () => {
-      navigation.navigate('Proposta');
+  }
+
+  //Função que prepara o Agendamento para salvar
+  const prepararAgendamento = (codigoPagamento) => {
+
+    //Constroi objeto para agendamento
+    //de acordo com os dados recebidos
+    const agendamentoDados = {
+      data: agendamento.data,
+      horario_inicio: agendamento.horario_inicio,
+      horario_fim: agendamento.horario_fim,
+      cep: agendamento.cep,
+      rua: agendamento.rua,
+      bairro: agendamento.bairro,
+      cidade: agendamento.cidade,
+      numero: agendamento.numero,
+      complemento: agendamento.complemento,
+      companheiro: {
+        id: agendamento.companheiro.id
+      },
+      beneficiario: {
+        id: agendamento.beneficiario.id
+      },
+      pagamento: {
+        id_pagamento: codigoPagamento
+      } 
     }
+
+    salvarAgendamento(agendamentoDados)
+
+  }
+
+  //Função que executa o pagamento de acordo com um método recebido
+  async function executarPagamento(metodo){
+
+    let dadosCartao;
+
+    //Se o método escolhido for o cartão de crédito, deve criar um objeto com as informações
+    if(metodo == 'cartao'){
+
+      dadosCartao = {
+        nome: agendamento.name,
+        numero: agendamento.number,
+        data_validade: agendamento.expiry,
+        cvv: agentamento.cvc
+      }
+
+    }
+
+    let formaPagamento = (metodo == 'dinheiro') ? 'DINHEIRO' : 'CARTAO_CREDITO'
+
+    //Construção de objeto com dados para o pagamento
+    const dadosPagamento = {
+      pagamento: {
+        valor: agendamento.valorTotal,
+        forma: formaPagamento,
+        cartao: dadosCartao ? dadosCartao : {},
+      },
+      beneficiario: {
+        id_beneficiario: agendamento.beneficiario.id
+      },
+      profissional: {
+        id_profissional: agendamento.companheiro.id
+      }
+    }
+
+    try {
+
+      const response = await realizarPagamento(dadosPagamento)
+
+      response.json().then((json) => {
+                      
+        const idPagamentoJson = json.id_pagamento;
+        console.log('esse é o id do pagamento: ', idPagamentoJson)
+        prepararAgendamento(idPagamentoJson)
+    
+      })
+      
+    } catch (error) {
+      console.log('entrei no catch')
+      console.log(error)
+    }
+    
+
+  }
+
+  //Tendo a confirmação do agendamento, ele deve ser salvo e concluído
+  //mas primeiramente deve salvar o pagamento, pra que receba esse código e a partir disso prossiga
+  const conclusaoAgendamento = () => {
+    
+    try {
+
+      executarPagamento(agendamento.metodoPagamento)
+      
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  const voltar = () => {
+    navigation.navigate('Proposta');
+  }
 
   //Fonte de letra
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -83,9 +213,9 @@ const ConfirmacaoAgendamento = ( {route, navigation}, props) =>{
           />
         <View style={styles.date}>
           <Text style={styles.dataescolhida}>
-            Data: {format(dataInicio, "dd/MM/yyyy")}
+            Data: {format(agendamento.data, "dd/MM/yyyy")}
           </Text>
-          <Text style={styles.text_horainicio}>Horário de início: {horarioInicio}</Text>
+          <Text style={styles.text_horainicio}>Horário de início: {agendamento.horario_inicio}</Text>
          </View>
 
         <Text style={styles.text_information_fim}>
@@ -96,13 +226,13 @@ const ConfirmacaoAgendamento = ( {route, navigation}, props) =>{
             source={require('../../assets/images/fim.png')}
           />
         <View style={styles.datefim}>
-          <Text style={styles.text_horafim}>Horário do término: {horarioFim}</Text>
+          <Text style={styles.text_horafim}>Horário do término: {agendamento.horario_fim}</Text>
         </View>
         <Text style={styles.text_carro}>
           Possui carro?
         </Text>  
         <Text style={styles.text_valor}>
-          Valor Total: R$ 
+          Valor Total: R$ {agendamento.valorTotal}
         </Text>
       </View>
     </View>

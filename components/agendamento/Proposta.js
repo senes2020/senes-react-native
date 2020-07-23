@@ -9,7 +9,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 const Proposta = ( {route, navigation}, props) => {
 
   //Coletando dados da navegação
-  const {idProfissionalEscolhido, idBeneficiario} = route.params
+  const {idProfissionalEscolhido, idBeneficiario, valorProfissional} = route.params
 
   //Interações com state
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -19,16 +19,55 @@ const Proposta = ( {route, navigation}, props) => {
   const [numero, setNumero] = useState('')
   const [complemento, setComplemento] = useState('')
   const [bairro, setBairro] = useState('')
-  const [valorTotalPagamento, setValorTotalPagamento] = useState(0.00)
+  const [valorTotalPagamento, setValorTotalPagamento] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [dataAgendamento, setDataAgendamento] = useState('')
+  const [horarioInicio, setHorarioInicio] = useState('')
+  const [horarioFim, setHorarioFim] = useState('')
+  const [cvc, setCvc] = useState('')
+  const [expiry, setExpiry] = useState('')
+  const [name, setName] = useState('')
+  const [number, setNumber] = useState('')
 
-  React.useEffect(() => {
-    return () => {
-      console.log('atualizado')
-     };
-  }, []);
+  //Obtem o evento de quando a tela é desfocada e focada novamente
+  navigation.addListener('focus', () => {
 
-  const confirmacao = () => {
+    //Se possuir os parâmetros de horário, faz os cálculos do valor final
+    //de acordo com o valor/h do profissional escolhido
+    if(route.params.horarioInicio && route.params.horarioFim){
+      
+      let horario_inicio = route.params.horarioInicio;
+      let horario_final = route.params.horarioFim;
+
+      let horaInicio = parseInt(horario_inicio.split(":"))
+      let horaFinal = parseInt(horario_final.split(":"))
+
+      let horas = horaFinal - horaInicio;
+
+      let valor = horas * parseInt(valorProfissional);
+
+      //Setando dados referentes a data, horário e valor total estimado
+      setDataAgendamento(route.params.dataInicio)
+      setHorarioInicio(horario_inicio)
+      setHorarioFim(horario_final)
+      setValorTotalPagamento(valor)
+    }
+
+    //Verifica se os dados do cartão foram passados
+    if(route.params.dadosCartao){
+      
+      //Setando dados do cartão de crédito
+      setCvc(route.params.dadosCartao.values.cvc)
+      setExpiry(route.params.dadosCartao.values.expiry)
+      setNumber(route.params.dadosCartao.values.number)
+      setName(route.params.dadosCartao.values.name)
+
+    }
+
+  });
+
+  //Função que realiza as validações de preenchimento
+  const validar = () => {
 
     if(!route.params.dataInicio || !route.params.horarioInicio || !route.params.horarioFim){
       Alert.alert(
@@ -40,6 +79,8 @@ const Proposta = ( {route, navigation}, props) => {
         ],
         { cancelable: false }
       );
+
+      return false 
     }else if(rua.length == 0 || cidade.length == 0 || numero.length == 0 || bairro.length == 0){
 
       Alert.alert(
@@ -51,6 +92,8 @@ const Proposta = ( {route, navigation}, props) => {
         ],
         { cancelable: false }
       );
+
+      return false
 
     }else if(!route.params.metodoPagamento){
 
@@ -64,38 +107,63 @@ const Proposta = ( {route, navigation}, props) => {
         { cancelable: false }
       );
 
-    }else{
-
-      const agendamento = {
-        data: route.params.dataInicio,
-        horario_inicio: route.params.horarioInicio,
-        horario_fim: route.params.horarioFim,
-        cep: cep,
-        rua: rua,
-        bairro: bairro,
-        cidade: cidade,
-        numero: numero,
-        complemento: complemento,
-        companheiro: {
-          id: idProfissionalEscolhido
-        },
-        beneficiario: {
-          id: idBeneficiario
-        },
-        pagamento: {
-          //id_pagamento: idPagamento
-        } 
-      }  
-
-      console.log(agendamento)
+      return false
 
     }
+
+    return true
+
   }
 
+  //Função que faz a confirmacao dos dados
+  const confirmacao = () => {
+
+    //O retorno vazio encerra a thread do código
+    if(!validar()) return
+
+    //Coleta o método de pagamento recebido
+    let metodoRecebido = route.params.metodoPagamento
+
+    //Monta objeto que representa os dados de agendamento que serão enviados para confirmação
+    const dadosAgendamento = {
+      data: dataAgendamento,
+      horario_inicio: horarioInicio,
+      horario_fim: horarioFim,
+      cep: cep,
+      rua: rua,
+      bairro: bairro,
+      cidade: cidade,
+      numero: numero,
+      complemento: complemento,
+      companheiro: {
+        id: idProfissionalEscolhido
+      },
+      beneficiario: {
+        id: idBeneficiario
+      },
+      metodoPagamento: metodoRecebido,
+      cartao: {
+        cvc: cvc,
+        name: name,
+        number: number,
+        expiry: expiry
+      },
+      valorTotal: valorTotalPagamento
+    }
+
+    //Envia para tela de confirmação com os dados
+    navigation.navigate('ConfirmacaoAgendamento', {
+      agendamento: dadosAgendamento
+    })
+
+  }
+
+  //Função que chama tela de datas e horários
   const datecal = () => {
     navigation.navigate('DateCal');
   }
 
+  //Função que busca dados de um local a partir do CEP enviado
   const coletarEnderecoPorCep = async(cep) => {
 
     try{
@@ -152,6 +220,7 @@ const Proposta = ( {route, navigation}, props) => {
 
   }
 
+  //Função que faz a atualização do CEP no state e dependendo do seu tamanho faz a busca dos campos
   const atualizarCep = (cep) => {
 
     //Setando o CEP no state
@@ -305,19 +374,9 @@ const Proposta = ( {route, navigation}, props) => {
         </View>
         
         <View>
-
-          {route.params.horarioInicio && route.params.horarioFim ?
-            
-
-            <Text style={styles.text_valor}>
-              Valor Total: R$ {valorTotalPagamento}
-            </Text>
-          :
-            
           <Text style={styles.text_valor}>
             Valor Total: R$ {valorTotalPagamento}
           </Text>
-          }
         </View>
 
       </View>

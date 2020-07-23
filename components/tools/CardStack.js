@@ -30,6 +30,20 @@ const CardStack = (props) => {
     );
     const [loading, setLoading] = useState(false);
 
+    //Arrumar forma de carregar dados sobre o primeiro card antes que haja atualização do index
+    const carregamentoDadosInicial = () => {
+      
+      //Código do profissional
+      const codigoProfissional = carouselItems[0].codigo
+
+      //Valor hora do profissional
+      const valorHora = carouselItems[0].valor
+
+      //Fazendo o envio do código
+      props.profissional(codigoProfissional, valorHora);
+
+    }
+
     //Obtendo profissionais registrados
     React.useEffect(() => {
 
@@ -106,7 +120,13 @@ const CardStack = (props) => {
       }
   
       coletarDadosEntidade();
+
     }, []);
+
+    //Atualizando o primeiro profissional na tela da Home depois do carregamento da lista total
+    React.useEffect(() => {
+      carregamentoDadosInicial();
+    }, [carouselItems]);
 
     //Função que atualiza dados do Overlay na tela principal
     //Enviando os dados necessários e a visibilidade
@@ -131,12 +151,15 @@ const CardStack = (props) => {
       //Código do profissional
       const codigoProfissional = carouselItems[index].codigo
 
+      //Valor hora do profissional
+      const valorHora = carouselItems[index].valor
+
       //Fazendo o envio do código
-      props.profissional(codigoProfissional);
+      props.profissional(codigoProfissional, valorHora);
     }
 
     const _renderItem = ({item,index}) => {
-
+        
         return (
           <View style={styles.container_principal}>
 

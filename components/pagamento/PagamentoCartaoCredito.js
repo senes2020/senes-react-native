@@ -5,18 +5,22 @@ import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-i
 
 
 export default class CartaoCredito extends Component {
-  state = { useLiteCreditCardInput: false };
+  state = { useLiteCreditCardInput: false, card: '' };
 
-  _onChange = (formData) => console.log(JSON.stringify(formData, null, " "));
+  _onChange = (formData) => this.setState({card: formData})
   _onFocus = (field) => console.log("focusing", field);
   _setUseLiteCreditCardInput = (useLiteCreditCardInput) => this.setState({ useLiteCreditCardInput });
 
   render() {
     const { navigation } = this.props;
     const navegar = () => {
+
+        let dadosCartao = this.state.card
+
         navigation.navigate('Proposta',  
         {
-            metodoPagamento: 'cartao'
+            metodoPagamento: 'cartao',
+            dadosCartao: dadosCartao
         });
     }
     return (

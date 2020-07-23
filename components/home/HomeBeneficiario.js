@@ -30,6 +30,7 @@ const HomeBeneficiario = ({route, navigation}, props) => {
     const [dadosOverlay, setDadosOverlay] = useState('teste');
     const [visibilidadeOverlay, setVisibilidadeOverlay] = useState(false);
     const [profissionalExibido, setProfissionalExibido] = useState(0);
+    const [valorHora, setValorHora] = useState(0);
 
     React.useEffect(() => {
 
@@ -59,7 +60,7 @@ const HomeBeneficiario = ({route, navigation}, props) => {
                         setNomeAbreviado(nomeCompleto[0]);
 
                         const codigoBanco = json.id;
-                        setCodigoBeneficiario(codigoBanco )
+                        setCodigoBeneficiario(codigoBanco)
                     
                     })
                 }else if(response.status == 404){
@@ -100,7 +101,8 @@ const HomeBeneficiario = ({route, navigation}, props) => {
             'Proposta', 
             {
                 idProfissionalEscolhido: profissionalExibido,
-                idBeneficiario: codigoBeneficiario
+                idBeneficiario: codigoBeneficiario,
+                valorProfissional: valorHora
             }, 
             NavigationActions.navigate({ 
                 routeName: 'SignedInNavigator'
@@ -109,8 +111,9 @@ const HomeBeneficiario = ({route, navigation}, props) => {
     }
 
     //Função que atualiza dados do profissional exibido
-    const atualizarProfissionalAtual = (codigo) => {
+    const atualizarProfissionalAtual = (codigo, valor) => {
         setProfissionalExibido(codigo)
+        setValorHora(valor)
     }
 
     //Função de atualização de dados e visibilidade do Overlay
@@ -203,7 +206,7 @@ const HomeBeneficiario = ({route, navigation}, props) => {
 
                 <View style={styles.container_card}>
                     <CardStack 
-                        profissional={(codigo) => atualizarProfissionalAtual(codigo)}
+                        profissional={(codigo, valor) => atualizarProfissionalAtual(codigo, valor)}
                         overlay={(visibilidade, dados) => atualizarOverlay(visibilidade, dados)}
                     />
                 </View>
