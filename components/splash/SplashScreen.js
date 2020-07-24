@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { StyleSheet, Animated, Text, View, Image } from "react-native";
+import { Rating, AirbnbRating, Icon } from 'react-native-elements';
 
 export default function SplashScreen({navigation}) {
   const animS = useRef(new Animated.Value(0)).current;
@@ -67,12 +68,11 @@ export default function SplashScreen({navigation}) {
         
         <View style={{alignItems: 'center', justifyContent: 'center', paddingTop: 50}}>
             <Animated.View style={{opacity: animHeart}}>
-                <Image
-                    style={styles.slogan}
-                    source={require('../../assets/icons/heart_white.png')}
-                />
+              <Icon name='heartbeat' type='font-awesome' size={70} color="#ffffff" />
             </Animated.View>
         </View>
+
+        
 
     </View>
   );

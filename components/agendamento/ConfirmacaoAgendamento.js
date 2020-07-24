@@ -10,7 +10,7 @@ import { realizarPagamento, realizarAgendamento } from '../../services/agendamen
 const ConfirmacaoAgendamento = ( {route, navigation}, props) =>{
 
   //obtendo os dados de agendamento pela navegação
-  const {agendamento} = route.params;
+  const {agendamento, profissionalEscolhido} = route.params;
 
   //Função que salva o agendamento de acordo com o objeto recebido
   async function salvarAgendamento(agendamento){
@@ -199,14 +199,13 @@ const ConfirmacaoAgendamento = ( {route, navigation}, props) =>{
             Nome do (a) Companheiro(a):  
           </Text>
           <Text style={styles.text_profissional}>
-          Stephanie Toledo
+          {profissionalEscolhido.nome}
           </Text>
         <View style={styles.container_information}>
           <View style={styles.container_inicio}>
             <Text style={styles.text_information}>
               Início
             </Text>
-          
           <Image
             style={styles.image}
             source={require('../../assets/images/inicio.png')}
@@ -228,9 +227,6 @@ const ConfirmacaoAgendamento = ( {route, navigation}, props) =>{
         <View style={styles.datefim}>
           <Text style={styles.text_horafim}>Horário do término: {agendamento.horario_fim}</Text>
         </View>
-        <Text style={styles.text_carro}>
-          Possui carro?
-        </Text>  
         <Text style={styles.text_valor}>
           Valor Total: R$ {agendamento.valorTotal}
         </Text>

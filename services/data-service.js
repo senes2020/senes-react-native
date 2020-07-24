@@ -54,3 +54,16 @@ export const coletarEndereco = async (cep) =>{
 
     return await fetch(URL, params)
 }
+
+export const coletarDadosAgendamentoPorProfissional = async (codigo) =>{
+
+    const response = await doRequest('senes/api/agendamento/lista/', 'GET', '', codigo)
+
+    if(response.status != 500){
+        console.log('retornou response')
+    }else{
+        console.log('não retornou response')
+    }
+
+    return response
+}

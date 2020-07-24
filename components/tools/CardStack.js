@@ -34,13 +34,10 @@ const CardStack = (props) => {
     const carregamentoDadosInicial = () => {
       
       //Código do profissional
-      const codigoProfissional = carouselItems[0].codigo
-
-      //Valor hora do profissional
-      const valorHora = carouselItems[0].valor
+      const profissional = carouselItems[0]
 
       //Fazendo o envio do código
-      props.profissional(codigoProfissional, valorHora);
+      props.profissional(profissional);
 
     }
 
@@ -149,13 +146,10 @@ const CardStack = (props) => {
       setActiveIndex(index);
 
       //Código do profissional
-      const codigoProfissional = carouselItems[index].codigo
-
-      //Valor hora do profissional
-      const valorHora = carouselItems[index].valor
+      const profissional = carouselItems[index]
 
       //Fazendo o envio do código
-      props.profissional(codigoProfissional, valorHora);
+      props.profissional(profissional);
     }
 
     const _renderItem = ({item,index}) => {

@@ -2,14 +2,15 @@ import React, {useState, useEffect, Component}  from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button, Alert } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-import FloatingLabelInput from '../tools/FloatingLabelInputBlue';
+import FloatingLabelInput from '../tools/FloatingLabelInputBlueEndereco';
 import { coletarEndereco } from '../../services/data-service'
 import { ScrollView } from 'react-native-gesture-handler';
+import { Rating, AirbnbRating, Icon } from 'react-native-elements';
 
 const Proposta = ( {route, navigation}, props) => {
 
   //Coletando dados da navegação
-  const {idProfissionalEscolhido, idBeneficiario, valorProfissional} = route.params
+  const {idBeneficiario, profissional} = route.params
 
   //Interações com state
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -44,7 +45,7 @@ const Proposta = ( {route, navigation}, props) => {
 
       let horas = horaFinal - horaInicio;
 
-      let valor = horas * parseInt(valorProfissional);
+      let valor = horas * parseInt(profissional.valor);
 
       //Setando dados referentes a data, horário e valor total estimado
       setDataAgendamento(route.params.dataInicio)
@@ -136,7 +137,7 @@ const Proposta = ( {route, navigation}, props) => {
       numero: numero,
       complemento: complemento,
       companheiro: {
-        id: idProfissionalEscolhido
+        id: profissional.codigo
       },
       beneficiario: {
         id: idBeneficiario
@@ -153,7 +154,8 @@ const Proposta = ( {route, navigation}, props) => {
 
     //Envia para tela de confirmação com os dados
     navigation.navigate('ConfirmacaoAgendamento', {
-      agendamento: dadosAgendamento
+      agendamento: dadosAgendamento,
+      profissionalEscolhido: profissional
     })
 
   }
@@ -281,23 +283,25 @@ const Proposta = ( {route, navigation}, props) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.container_card}>
         <Text style={styles.text_title}>QUASE LÁ</Text>
-        <Text style={styles.text_card}> 
-          Nos informe a data e horário de início e término do acompanhamento.
+        <Text style={styles.text_information}> 
+          1. Nos informe a data e horário de início e término do acompanhamento.
         </Text>
   
         <View style={styles.container_information}>
 
           <TouchableOpacity
-          style={styles.button_date}
+            style={styles.button_date}
             onPress={datecal}>
-            <Text style={styles.text_information}>
-              Toque para selecionar data e horário
+            <Icon name='event-note' type='material' size={70} color="#005E80" />  
+            <Text style={styles.text_card}>
+              Toque no calendário para selecionar data e horário
             </Text>
           </TouchableOpacity>
 
           <View style={styles.container_endereco}>
-            <Text style={styles.text_endereco}>Informe o endereço para o acompanhamento.</Text>
+            <Text style={styles.text_information}>2. Informe o endereço para o acompanhamento.</Text>
             <FloatingLabelInput
+                style={{textAlign: 'left'}}
                 label="Digite o CEP"
                 value={cep ? cep : ''}
                 onChangeText={(texto) => atualizarCep(texto)}
@@ -345,9 +349,9 @@ const Proposta = ( {route, navigation}, props) => {
             
           </View>
 
-          <View>
-            <Text style={styles.text_pagamento}>
-              Forma de Pagamento
+          <View style={styles.container_pagamento}>
+            <Text style={styles.text_information}>
+              3. Escolha uma forma de Pagamento
             </Text>
             <View style={styles.pagamento_icons}>
               <TouchableOpacity
@@ -396,7 +400,6 @@ const Proposta = ( {route, navigation}, props) => {
 //Estilização
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -421,7 +424,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'montserrat-titulo',
     textAlign: 'center',
-    minHeight: 60, 
+    minHeight: 60,
+    marginLeft: 15,
+    marginRight: 15
   },
 
   text_information: {
@@ -471,7 +476,6 @@ const styles = StyleSheet.create({
 
   container_card: {
     backgroundColor: "#fff",
-    //backgroundColor: "red",
     minHeight: 510,
     width: 380,
     borderWidth: 1,
@@ -488,6 +492,10 @@ const styles = StyleSheet.create({
   container_endereco: {
     width: 300,
     alignSelf: 'center',
+  },
+
+  container_pagamento: {
+    marginTop: 30
   },
 
   container_btn: {
@@ -541,9 +549,9 @@ const styles = StyleSheet.create({
 
   button_date: {
     width: 300,
-    height: 50,
     borderRadius: 20,
     marginTop: 20,
+    marginBottom: 20,
     textAlign: "center",
   },
 
@@ -554,7 +562,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderWidth: 1.5,
     borderRadius: 15,
-    marginTop: 25,
+    margin: 25,
     textAlign: "center",
   }
 

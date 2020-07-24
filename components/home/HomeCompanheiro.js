@@ -10,17 +10,20 @@ import {
   View,
   ImageBackground,
   Dimensions,
-  Linking
+  Linking,
+  ActivityIndicator
 } from 'react-native';
 import { Rating, AirbnbRating, Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import ImageCarousel from '../tools/ImageCarousel';
 import { AppLoading } from 'expo';
-import { coletarDadosCompanheiro } from '../../services/data-service'
+import { coletarDadosCompanheiro, coletarDadosAgendamentoPorProfissional } from '../../services/data-service'
 import CurativosAvaliacao from '../tools/CurativosAvaliacao';
 
+//Importando componente de fontes
+import * as Font from 'expo-font'
+
 const { width } = Dimensions.get('window'); 
-let nome_user = 'Alberto';
 
 const TelaHomeCompanheiro = ({route, navigation}, props) => {
 
@@ -33,16 +36,59 @@ const TelaHomeCompanheiro = ({route, navigation}, props) => {
     const [nomeAbreviado, setNomeAbreviado] = useState();
     const [avaliacao, setAvaliacao] = useState();
     const [loading, setLoading] = useState(false);
-    const [dadosOverlay, setDadosOverlay] = useState('teste');
-    const [visibilidadeOverlay, setVisibilidadeOverlay] = useState(false);
-    const [profissionalExibido, setProfissionalExibido] = useState(0);
+    const [codigoProfissional, setCodigoProfissional] = useState('');
+    const [listaAgendamentos, setListaAgendamentos] = useState('');
 
     React.useEffect(() => {
 
       //Atualizando tela com loading
       setLoading(true);
 
+      
+      async function coletarDadosAgendamentos(codigoProfissionalRecebido){
+        
+        try{
+          
+          const response = await coletarDadosAgendamentoPorProfissional(codigoProfissionalRecebido)
+
+          //Atualizando tela sem loading
+          setLoading(false);
+
+          //Se a resposta voltar com status 200 OK, 
+          //prossegue, senão dá mensagem
+          if(response.ok){
+              
+              response.json().then((json) => {
+
+                  const lista = json;
+
+                  setListaAgendamentos(lista)
+              
+              })
+            }else if(response.status == 404){
+                
+                Alert.alert(
+                "Erro de Obtenção de dados :(",
+                "Ooops, sorry, erro nosso! Consulte os desenvolvedores sobre a passagem de ID de usuário para a tela Home.",
+                [
+                    
+                    { text: "OK"}
+                ],
+                { cancelable: false }
+                );
+            }
+
+        }catch(erro){
+            console.log('entrei no catch')
+            console.log(erro)
+        }
+      }
+
+      //Função que coleta dados de uma entidade
       async function coletarDadosEntidade() {
+
+          //Atualizando tela sem loading
+          setLoading(true);
         
           try{
           
@@ -59,9 +105,14 @@ const TelaHomeCompanheiro = ({route, navigation}, props) => {
                   
                       const nome = json.nome;
                       const avaliacao = json.avaliacao;
+                      const codigoProfissional = json.id;
+
+                      //Coletando dados dos agendamentos
+                      coletarDadosAgendamentos(codigoProfissional);
 
                       setNome(nome);
                       setAvaliacao(avaliacao);
+                      setCodigoProfissional(codigoProfissional);
 
                       let nomeCompleto = nome.split(" ");
                       console.log('O nome abreviado nesse caso é: ', nomeCompleto[0])
@@ -87,8 +138,12 @@ const TelaHomeCompanheiro = ({route, navigation}, props) => {
           }
 
       }
+
+
   
+      //Coletando os dados do profissional
       coletarDadosEntidade();
+
     }, []);
 
     //Realiza chamada telefônica para o 0800 do SENES
@@ -134,13 +189,30 @@ const TelaHomeCompanheiro = ({route, navigation}, props) => {
     return (
         <ScrollView style={styles.container}>
 
+          <View
+              style={[
+              styles.containerLoading,
+              {
+                  backgroundColor: loading
+                  ? "#CCCCCC55"
+                  : "#FFFFFF00",
+              },
+              ]}
+          >
+            <ActivityIndicator
+                size="large"
+                animating={loading}
+                color="#005E80"
+                />
+          </View>
+
           <LinearGradient
               colors={['transparent', '#005E80']}    
           >
 
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <TouchableOpacity
-                    style={{paddingLeft: 20}}
+                    style={{paddingLeft: 20, marginTop: 50}}
                     onPress={retornarMenu}
                 >
                     <Icon name='menu' type='entypo' size={40} color="#005E80" />
@@ -172,7 +244,7 @@ const TelaHomeCompanheiro = ({route, navigation}, props) => {
             </View>
             
             <View style={styles.carouselContainer2}>
-                <ImageCarousel/>
+                <ImageCarousel lista={listaAgendamentos}/>
             </View>
 
             <View style={styles.container_ajuda}>
@@ -196,6 +268,12 @@ const styles = StyleSheet.create({
       container: {
         flex: 1,
         flexDirection: "column"
+      },
+      containerLoading: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
       },
       textWelcome: {
         color: "#005E80",
@@ -224,15 +302,19 @@ const styles = StyleSheet.create({
 
       },
     button_info: {
-      alignSelf: 'flex-start',
-      borderRadius: 20,
-      padding: 5,
-      marginRight: 5,
-      marginBottom: 10
+      alignSelf: "flex-end",
+      height: 60,
+      width: 50,
+      marginTop: 38,
+      marginRight: 30,
+      borderColor: "transparent",
+      borderWidth: 2,
+      borderRadius: 60,
+      justifyContent: "center"
     },
     carouselContainer2:{ 
       width: width,
-      height:width*0.99,
+      minHeight: 400,
       marginBottom:30,
     }, 
     containRating:{

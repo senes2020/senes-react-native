@@ -30,7 +30,6 @@ const HomeBeneficiario = ({route, navigation}, props) => {
     const [dadosOverlay, setDadosOverlay] = useState('teste');
     const [visibilidadeOverlay, setVisibilidadeOverlay] = useState(false);
     const [profissionalExibido, setProfissionalExibido] = useState(0);
-    const [valorHora, setValorHora] = useState(0);
 
     React.useEffect(() => {
 
@@ -100,9 +99,8 @@ const HomeBeneficiario = ({route, navigation}, props) => {
         navigation.navigate(
             'Proposta', 
             {
-                idProfissionalEscolhido: profissionalExibido,
-                idBeneficiario: codigoBeneficiario,
-                valorProfissional: valorHora
+                profissional: profissionalExibido,
+                idBeneficiario: codigoBeneficiario
             }, 
             NavigationActions.navigate({ 
                 routeName: 'SignedInNavigator'
@@ -111,9 +109,8 @@ const HomeBeneficiario = ({route, navigation}, props) => {
     }
 
     //Função que atualiza dados do profissional exibido
-    const atualizarProfissionalAtual = (codigo, valor) => {
-        setProfissionalExibido(codigo)
-        setValorHora(valor)
+    const atualizarProfissionalAtual = (profissional) => {
+        setProfissionalExibido(profissional)
     }
 
     //Função de atualização de dados e visibilidade do Overlay
@@ -206,7 +203,7 @@ const HomeBeneficiario = ({route, navigation}, props) => {
 
                 <View style={styles.container_card}>
                     <CardStack 
-                        profissional={(codigo, valor) => atualizarProfissionalAtual(codigo, valor)}
+                        profissional={(profissional) => atualizarProfissionalAtual(profissional)}
                         overlay={(visibilidade, dados) => atualizarOverlay(visibilidade, dados)}
                     />
                 </View>

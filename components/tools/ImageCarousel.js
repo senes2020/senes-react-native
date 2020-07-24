@@ -14,43 +14,15 @@ import { Icon } from 'react-native-elements';
 
 const { width } = Dimensions.get('window');
 
-const negativoImagem = 'https://www.pagina1pb.com.br/wp-content/uploads/2018/11/X-png-23.png'
-const aceitarImagem = 'https://icons.iconarchive.com/icons/custom-icon-design/flatastic-9/512/Accept-icon.png'
 
-const data = [
-  {
-    title: 'Me ajude com às compras',
-    horario: 'Horário: 10:20am até 11:20am',
-    dia:'Data: 11 de fevereiro, 2019',
-    local:'Local: Rua Santa Barbara, SP',
-    pagamento: '80,00'
-  },
-  {
-    title: 'Me ajude com às compras',
-    horario: 'Horário: 10:20am até 11:20am',
-    dia:'Data: 11 de fevereiro, 2019',
-    local:'Local: Rua Santa Barbara, SP',
-    pagamento: '80,00'
-  },
-  {
-    title: 'Me ajude com às compras',
-    horario: 'Horário: 10:20am até 11:20am',
-    dia:'Data: 11 de fevereiro, 2019',
-    local:'Local: Rua Santa Barbara, SP',
-    pagamento: '80,00'
-  },
-  {
-    title: 'Me ajude com às compras',
-    horario: 'Horário: 10:20am até 11:20am',
-    dia:'Data: 11 de fevereiro, 2019',
-    local:'Local: Rua Santa Barbara, SP',
-    pagamento: '80,00'
-  },
-]; 
 
 export default class ImageCarousel extends Component {
+  state = { agendamentos: [] };
+
   renderItem = ({ item, index }) => {
-    const { title, horario, dia, local, pagamento } = item;
+    const { horario_inicio, horario_fim, data, rua, cep, bairro, cidade, pagamento, complemento, beneficiario  } = item;
+    let dataFormatada = data.split('-');
+    dataFormatada = dataFormatada[2] + '/' + dataFormatada[1] + '/' + dataFormatada[0]
     return (
       <TouchableOpacity
         activeOpacity={1}
@@ -61,10 +33,36 @@ export default class ImageCarousel extends Component {
       >
         <View style={styles.lowerContainer}>
           <Icon name='event-note' type='material' size={70} color="#005E80" />
-          <Text style={styles.titleText}>{title}</Text>
-          <Text style={styles.contentText}>{horario}</Text>
-          <Text style={styles.contentText}>{dia}</Text>
-          <Text style={styles.contentText}>{local}</Text>
+          <Text style={styles.titleText}>{dataFormatada}</Text>
+
+          <View style={styles.container_dado_agendamento}>
+            <Icon name='alarm' type='material' size={25} color="#005E80" />
+            <Text style={styles.contentText}>{horario_inicio} até {horario_fim}</Text>
+          </View>
+
+          <View style={styles.container_dado_agendamento_local}>
+            <Icon name='location-on' type='material' size={25} color="#005E80" />
+            <View>
+              <Text style={styles.contentText}>{rua}</Text>
+              <Text style={styles.contentText}>{bairro}</Text>
+              {cep ? 
+              <Text style={styles.contentText}>{cidade} - CEP: {cep}</Text>
+              :
+                <Text style={styles.contentText}>{cidade}</Text>
+              }
+              <Text style={styles.contentText}>{complemento}</Text>
+            </View>
+          </View>
+          
+          <View style={styles.container_dado_agendamento}>
+            <Icon name='account-circle' type='material' size={25} color="#005E80" />
+            <Text style={styles.contentText}>{beneficiario.nome}</Text>
+          </View>
+
+          <View style={styles.container_dado_agendamento}>
+            <Icon name='attach-money' type='material' size={25} color="#005E80" />
+            <Text style={styles.contentText}>{pagamento.valor}</Text>
+          </View>
         </View>
         <View style={styles.container_acao}>
           <TouchableOpacity>
@@ -82,7 +80,7 @@ export default class ImageCarousel extends Component {
     return (
       <Carousel
         style={styles.carousel}
-        data={data}
+        data={this.props.lista}
         renderItem={this.renderItem}
         itemWidth={0.75 * width}
         inActiveOpacity={0.4}
@@ -97,7 +95,6 @@ export default class ImageCarousel extends Component {
 
 const styles = StyleSheet.create({
   carousel: {
-    flex: 1
   },
   item: {
     borderWidth: 2,
@@ -106,7 +103,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 3,
     marginStart: 10,
-    },
+  },
+  container_dado_agendamento: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 10
+  },
+  container_dado_agendamento_local: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginTop: 10
+  },
   imageBackground: {
     flex: 2,
     backgroundColor: '#EBEBEB',
@@ -125,20 +133,21 @@ const styles = StyleSheet.create({
   rightText: { color: 'white' },
   lowerContainer: {
     flex: 1,
-    margin: 10,
+    marginLeft: 10,
+    paddingTop: 20
   },
   titleText: {
     fontWeight: 'bold',
     fontSize: 18,
     alignSelf: 'center',
     textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 20
+    marginTop: 5,
+    marginBottom: 5
   },
   contentText: {
-    marginTop: 10,
     fontSize: 15,
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
+    marginLeft: 10
   },
   valueText:{
     marginTop: 10,
@@ -150,6 +159,7 @@ const styles = StyleSheet.create({
   container_acao:{
     flexDirection: 'row',
     justifyContent: 'space-around',
-    margin: 30
+    marginTop: 10,
+    marginBottom: 20
   }
 });

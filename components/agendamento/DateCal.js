@@ -13,6 +13,7 @@ import { format, isThisSecond } from "date-fns";
 import Icon from "react-native-vector-icons/FontAwesome";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TextInput } from "react-native-gesture-handler";
+import FloatingLabelInput from "../tools/FloatingLabelInputWhite";
 
 class DateCal extends Component {
   
@@ -23,7 +24,7 @@ class DateCal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: new Date("2020/06/30"),
+      data: new Date(),
       confirmDisabled: true,
       TextInputValueHolder: ''
     };
@@ -51,6 +52,22 @@ class DateCal extends Component {
     }
     console.log(dataSel);
   };
+
+  //Função para aplicar máscara do horario e setar no state
+  setarHorario = (texto, tempo) => {
+
+    //Aplicando máscara de CPF
+    let novoTexto = texto.replace(/\D/g, '') // substitui qualquer caracter que nao seja numero por nada
+    .replace(/(\d{2})(\d)/, '$1:$2') //Coloca o : após 2 dígitos
+
+    //Setando no state
+    if(tempo == 'inicio'){
+      this.setState({horarioInicio:novoTexto})
+      console.log(texto, tempo)
+    }else if(tempo == 'termino'){
+      this.setState({horarioFim:novoTexto})
+    }
+}
 
   render() {
     const { showDatePicker } = this.state;
@@ -117,25 +134,33 @@ class DateCal extends Component {
             </Text>
             </View>
             
-            <TextInput style={styles.horario_inicio}
-               underlineColorAndroid = "transparent"
-               placeholder = "Digite um horário para início"
-               placeholderTextColor = "#fff"
-               autoCapitalize = "none"
-               value={this.state.horarioInicio}
-               onChangeText={(texto) => this.setState({horarioInicio:texto})}
-               maxLength={5}
-               >
-            </TextInput>
+            <View style={{marginTop: 20}}>
+              <Text  style={{color: 'white', marginLeft: 30}}>Digite um horário para início: </Text>
+              <TextInput style={styles.horario_inicio}
+                underlineColorAndroid = "white"
+                placeholder = "Ex: 14:30"
+                placeholderTextColor = "#d1d1d1"
+                autoCapitalize = "none"
+                value={this.state.horarioInicio}
+                keyboardType={'numeric'}
+                onChangeText={(texto) => this.setarHorario(texto, 'inicio')}
+                maxLength={5}
+                >
+              </TextInput>
+            </View>
 
-            <TextInput style={styles.horario_fim}
-               underlineColorAndroid = "transparent"
-               placeholder = "Digite um horário para término"
-               placeholderTextColor = "#fff"
-               value={this.state.horarioFim}
-               onChangeText={(texto) => this.setState({horarioFim:texto})}
-               maxLength={5}>
-            </TextInput>
+            <View style={{marginTop: 20}}>
+              <Text  style={{color: 'white', marginLeft: 30}}>Digite um horário para término: </Text>  
+              <TextInput style={styles.horario_fim}
+                underlineColorAndroid = "white"
+                placeholder = "Ex: 17:30"
+                placeholderTextColor = "#d1d1d1"
+                value={this.state.horarioFim}
+                keyboardType={'numeric'}
+                onChangeText={(texto) => this.setarHorario(texto, 'termino')}
+                maxLength={5}>
+              </TextInput>
+            </View>
 
               <TouchableOpacity
                 style={styles.button_agendar} onPress={navegar}>
@@ -171,6 +196,8 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     paddingTop: 30,
     marginBottom: 30,
+    marginRight: 20,
+    marginLeft: 20
   },
 
   data: {
@@ -188,18 +215,20 @@ const styles = StyleSheet.create({
     fontSize: 19,
     color: '#fff',
     letterSpacing: 1,
-    width: 270,
-    paddingTop: 30,
-    marginLeft: 50,
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 5,
+    paddingBottom: 15
   },
    
   horario_fim: {
     fontSize: 19,
     color: '#fff',
     letterSpacing: 1,
-    width: 300,
-    paddingTop: 30,
-    marginLeft: 40,
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 5,
+    paddingBottom: 15
   },
 
   elementos: {
@@ -218,7 +247,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#005e80',
     borderWidth: 2,
     borderRadius: 15,
-    marginTop: 50,
+    margin: 30,
     textAlign: "center",
     marginLeft: 60,
   },
