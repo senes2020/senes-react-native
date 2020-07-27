@@ -56,11 +56,15 @@ const Proposta = ( {route, navigation}, props) => {
 
     //Verifica se os dados do cartão foram passados
     if(route.params.dadosCartao){
+
+      //Formatando numero do cartão de crédito
+      let numeroFormatado = route.params.dadosCartao.values.number.split(' ')
+      numeroFormatado = numeroFormatado[0] + numeroFormatado[1] + numeroFormatado[2] + numeroFormatado[3] 
       
       //Setando dados do cartão de crédito
       setCvc(route.params.dadosCartao.values.cvc)
       setExpiry(route.params.dadosCartao.values.expiry)
-      setNumber(route.params.dadosCartao.values.number)
+      setNumber(numeroFormatado)
       setName(route.params.dadosCartao.values.name)
 
     }
@@ -343,7 +347,6 @@ const Proposta = ( {route, navigation}, props) => {
                 value={complemento ? complemento : ''}
                 onChangeText={(texto) => setComplemento(texto)}
                 maxLength={40}
-                keyboardType={'numeric'}
                 editable={loading ? false : true}
             />
             

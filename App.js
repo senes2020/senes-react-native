@@ -1,16 +1,7 @@
 import React from 'react';
-import Navigator from './components/Navigator'
-
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
-import rootReducer from './components/reducers/rootReducer'
 import Routes from './navigation/route';
-//import connect from "react-redux" 
-//import { changeText } from "../actions/homeBeneficiarioActions"
 
-const store = createStore(rootReducer);
-
-//Descobrir como conectar o Provider aqui
+console.disableYellowBox = true;
 
 export default class App extends React.Component {
 

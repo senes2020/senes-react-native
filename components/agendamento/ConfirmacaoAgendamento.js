@@ -80,19 +80,23 @@ const ConfirmacaoAgendamento = ( {route, navigation}, props) =>{
   //Função que executa o pagamento de acordo com um método recebido
   async function executarPagamento(metodo){
 
+    console.log(metodo)
+
     let dadosCartao;
 
     //Se o método escolhido for o cartão de crédito, deve criar um objeto com as informações
     if(metodo == 'cartao'){
 
       dadosCartao = {
-        nome: agendamento.name,
-        numero: agendamento.number,
-        data_validade: agendamento.expiry,
-        cvv: agentamento.cvc
+        nome: agendamento.cartao.name,
+        numero: agendamento.cartao.number,
+        data_validade: agendamento.cartao.expiry,
+        cvv: agendamento.cartao.cvc
       }
 
     }
+
+    console.log(dadosCartao)
 
     let formaPagamento = (metodo == 'dinheiro') ? 'DINHEIRO' : 'CARTAO_CREDITO'
 

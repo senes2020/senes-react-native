@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   contentText: {
     fontSize: 15,
     alignSelf: 'flex-start',
-    marginLeft: 10
+    marginLeft: 5
   },
   valueText:{
     marginTop: 10,
